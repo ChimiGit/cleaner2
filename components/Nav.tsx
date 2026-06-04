@@ -28,7 +28,7 @@ export function Nav({ active, onBook, base = '' }: NavProps) {
       <header className={'nav' + (scrolled ? ' scrolled' : '')}>
         <div className="wrap">
           <div className="nav-inner">
-            <Link href={base + '#home'} className="brand">
+            <Link href={base || '/'} className="brand" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <Image className="brand-logo" src="/assets/logo.jpg" alt="NG Clean logo" width={40} height={40} />
               <span className="brand-name">NG&nbsp;Clean</span>
             </Link>
@@ -44,8 +44,8 @@ export function Nav({ active, onBook, base = '' }: NavProps) {
                 <Icon name="phone" size={16} /> {NG.biz.phone}
               </a>
               <button className="btn btn-primary btn-book" onClick={onBook}>Book now</button>
-              <button className="nav-burger" aria-label="Menu" onClick={() => setOpen(true)}>
-                <Icon name="menu" />
+              <button className="nav-burger" aria-label={open ? 'Close menu' : 'Menu'} onClick={() => setOpen(!open)}>
+                <Icon name={open ? 'x' : 'menu'} />
               </button>
             </div>
           </div>

@@ -16,6 +16,7 @@ interface ContactForm {
 export function Contact() {
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(false);
 
   const {
     register,
@@ -28,13 +29,20 @@ export function Contact() {
 
   const onSubmit = async (data: ContactForm) => {
     setSubmitting(true);
+    setError(false);
     try {
-      await fetch('/api/contact', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      setDone(true);
+      if (res.ok) {
+        setDone(true);
+      } else {
+        setError(true);
+      }
+    } catch {
+      setError(true);
     } finally {
       setSubmitting(false);
     }
@@ -131,6 +139,11 @@ export function Contact() {
                   <label>Message <span style={{ color: 'var(--ink-3)', fontWeight: 400 }}>(optional)</span></label>
                   <textarea rows={3} {...register('message')} placeholder="Tell us about your space…"></textarea>
                 </div>
+                {error && (
+                  <p style={{ color: '#c0392b', fontSize: 14, margin: '0 0 12px' }}>
+                    Something went wrong. Please try again or call us directly.
+                  </p>
+                )}
                 <button className="btn btn-primary" type="submit" style={{ width: '100%' }} disabled={submitting}>
                   {submitting ? 'Sending…' : 'Send request'} <Icon name="arrow" size={16} className="arr" />
                 </button>

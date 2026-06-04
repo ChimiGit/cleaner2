@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   try {
     await resend.emails.send({
       from: 'NG Clean <onboarding@resend.dev>',
-      to: process.env.ADMIN_EMAIL!,
+      to: [process.env.ADMIN_EMAIL!],
       subject: `New Quote Request — ${service || 'General'}`,
       html: `
         <h2 style="color:#143258;margin:0 0 20px">New Quote Request</h2>
