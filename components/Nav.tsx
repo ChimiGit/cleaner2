@@ -62,7 +62,7 @@ export function Nav({ active, onBook, base = '' }: NavProps) {
         <div className="wrap">
           <div className="nav-inner">
             <Link href={base || '/'} className="brand" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              <Image className="brand-logo" src="/assets/logo.jpg" alt="NG Clean logo" width={40} height={40} />
+              <Image className="brand-logo" src="/assets/logo.png" alt="NG Clean logo" width={40} height={40} />
               <span className="brand-name">NG&nbsp;Clean</span>
             </Link>
             <nav className="nav-links">
