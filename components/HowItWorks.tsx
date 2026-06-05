@@ -13,7 +13,7 @@ export function HowItWorks({ onBook }: HowItWorksProps) {
       <div className="wrap">
         <div className="how-grid">
           <Reveal className="how-media">
-            <Image src={NG.IMG.how} alt="NG Clean team at work" fill style={{ objectFit: 'cover' }} loading="lazy" />
+            <Image src={NG.IMG.how} alt="NG Clean team at work" fill sizes="100vw" style={{ objectFit: 'cover' }} loading="lazy" />
             <div className="how-float">
               <div className="hf-badge"><Icon name="sparkle" size={20} /></div>
               <div>

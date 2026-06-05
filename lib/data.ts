@@ -15,25 +15,25 @@ export const NG = {
     abn: '61 703 572 412',
     city: 'Perth',
     hours: [
-      { d: 'Monday – Friday', t: '8:00 am – 5:00 pm' },
-      { d: 'Saturday – Sunday', t: '9:00 am – 5:00 pm' },
+      { d: 'Monday – Friday', t: '8am – 5pm' },
     ],
   },
 
   IMG: {
-    hero: px(6196693, 1500),
-    about: px(6197117, 1100),
+    hero: px(1643383, 1500),
+    about: '/assets/cleaning1.png',
     how: px(6195274, 1300),
     cta: px(6197122, 1500),
     svc: {
-      bond: px(4098778, 900),
+      bond: '/assets/End of Lease Bond Cleaning.png',
       deep: px(4239035, 900),
-      carpet: px(6195951, 900),
-      oven: px(4099467, 900),
-      window: px(6197122, 900),
+      carpet: '/assets/Carpet Cleaning.jpg',
+      oven: '/assets/Oven Cleaning.png',
+      window: '/assets/Window Cleaning.jpg',
       regular: px(4108715, 900),
-      office: px(6195124, 900),
+      office: '/assets/Office Cleaning.png',
       airbnb: px(4099354, 900),
+      school: px(8613089, 900),
     },
   },
 
@@ -57,14 +57,14 @@ export const NG = {
   hero: {
     kicker: 'Perth · Residential & Commercial',
     title: 'Perth professional cleaning you can trust',
-    sub: 'Reliable, detail-focused cleaning for home and business — spotless results delivered with care, consistency and professionalism.',
+    sub: 'Reliable, detail-focused cleaning for home and business. Spotless results delivered with care, consistency and professionalism.',
   },
 
   why: [
-    { icon: 'shield', t: 'Detail-focused & reliable', d: 'We turn up on time and clean to a consistent, inspection-ready standard every visit.' },
-    { icon: 'leaf', t: 'Care in every corner', d: 'Cleaning is more than a job to us — we treat your home and workplace like our own.' },
-    { icon: 'home', t: 'Locally owned in Perth', d: 'A local team that takes genuine pride in making our community fresh and welcoming.' },
-    { icon: 'spark', t: 'Spotless, stress-free', d: 'From a quick refresh to a full bond clean, we leave your space fresh and worry-free.' },
+    { icon: 'spark',  t: 'Premium Product', d: 'Top quality you can trust, crafted for excellence.' },
+    { icon: 'shield', t: 'Fully Equipped', d: 'Complete with advanced tools and everything needed.' },
+    { icon: 'check',  t: 'Meticulous Result', d: 'Attention to every detail for a flawless finish.' },
+    { icon: 'leaf',   t: 'Customized Cleaning & Satisfaction Guarantee', d: 'Tailored to your needs — your satisfaction is our promise. We\'ve got you covered.' },
   ],
 
   story: [
@@ -76,28 +76,31 @@ export const NG = {
   services: [
     { key: 'bond', img: 'bond' as const, icon: 'home', cat: 'Residential', checklist: 'vacate',
       title: 'End of Lease / Bond Cleaning',
-      desc: 'Moving out? Our detailed end-of-lease clean leaves the property spotless and inspection-ready, giving you the best chance of getting your full bond back.' },
+      desc: 'Moving out? Our detailed end of lease cleaning helps you leave the property spotless and inspection-ready, giving you the best chance of getting your full bond back.' },
     { key: 'deep', img: 'deep' as const, icon: 'sparkle', cat: 'Residential', checklist: 'deep',
       title: 'Deep Cleaning',
-      desc: 'Targets hidden dirt, grime and hard-to-reach areas for a complete top-to-bottom clean. Perfect for spring cleans or homes needing extra attention.' },
+      desc: 'Our deep cleaning service targets hidden dirt, grime, and hard-to-reach areas for a complete top-to-bottom clean. Perfect for spring cleans or homes needing extra attention.' },
     { key: 'carpet', img: 'carpet' as const, icon: 'leaf', cat: 'Residential', checklist: null,
       title: 'Carpet Cleaning',
-      desc: 'Refresh your carpets with our professional service. We lift dirt, stains and odours, leaving carpets fresh, clean and looking like new again.' },
+      desc: 'Refresh your carpets with our professional carpet cleaning service. We remove dirt, stains, and odours, leaving your carpets fresh, clean, and looking like new again.' },
     { key: 'oven', img: 'oven' as const, icon: 'spark', cat: 'Residential', checklist: null,
       title: 'Oven Cleaning',
-      desc: 'Bring your oven back to life. We remove grease, burnt residue and stubborn buildup to leave your oven sparkling clean and fresh.' },
+      desc: 'Bring your oven back to life with our thorough oven cleaning service. We remove grease, burnt residue, and stubborn buildup to leave your oven sparkling clean and fresh.' },
     { key: 'window', img: 'window' as const, icon: 'window', cat: 'Residential', checklist: 'deep',
       title: 'Window Cleaning',
-      desc: 'Enjoy crystal-clear windows. We clean interior and exterior glass surfaces for a streak-free shine and a brighter, lighter space.' },
+      desc: 'Enjoy crystal-clear windows with our professional window cleaning service. We clean interior and exterior glass surfaces for a streak-free shine and brighter space.' },
     { key: 'regular', img: 'regular' as const, icon: 'home', cat: 'Residential', checklist: 'regular',
       title: 'Regular Residential Cleaning',
-      desc: 'Keep your home fresh and tidy with reliable weekly, fortnightly or monthly cleaning tailored to your lifestyle and needs.' },
+      desc: 'Keep your home fresh and tidy with our regular residential cleaning service. We provide reliable weekly, fortnightly, or monthly cleaning tailored to your lifestyle and needs.' },
     { key: 'office', img: 'office' as const, icon: 'building', cat: 'Commercial', checklist: null,
       title: 'Office Cleaning',
-      desc: 'Create a clean, productive workplace. We deliver reliable, professional cleaning to keep your office hygienic, organised and welcoming.' },
+      desc: 'Create a clean and productive workplace with our office cleaning service. We deliver reliable and professional cleaning solutions to keep your office hygienic, organised, and welcoming.' },
     { key: 'airbnb', img: 'airbnb' as const, icon: 'bed', cat: 'Commercial', checklist: null,
       title: 'Airbnb Cleaning',
-      desc: 'Keep your Airbnb guest-ready. Every room left spotless, refreshed and welcoming — helping you maintain excellent reviews and presentation.' },
+      desc: 'Keep your Airbnb guest-ready with our reliable cleaning service. We ensure every room is spotless, refreshed, and welcoming, helping you maintain excellent guest reviews and a professional presentation.' },
+    { key: 'school', img: 'school' as const, icon: 'building', cat: 'Commercial', checklist: null,
+      title: 'School / Childcare Cleaning',
+      desc: 'Safe, thorough cleaning for schools and childcare centres. We use child-friendly products to maintain a hygienic, healthy environment for students and staff.' },
   ],
 
   steps: [
@@ -220,7 +223,7 @@ export const NG = {
   details: {
     bond: {
       tagline: 'Inspection-ready, bond-back cleaning',
-      intro: 'Moving out is stressful enough without worrying about your bond. Our end-of-lease clean follows a detailed, agent-approved standard — covering every room top to bottom so the property is handed back spotless and inspection-ready. We focus on the areas property managers check first, giving you the best possible chance of getting your full bond back.',
+      intro: 'Moving out? Our detailed end of lease cleaning helps you leave the property spotless and inspection-ready, giving you the best chance of getting your full bond back.',
       includes: [
         'Full interior detail of every room', 'Inside oven, rangehood & stovetop degreased',
         'Inside & outside of all cupboards and drawers', 'Bathrooms descaled — showers, tiles, grout & toilets',
@@ -240,7 +243,7 @@ export const NG = {
     },
     deep: {
       tagline: 'A complete top-to-bottom refresh',
-      intro: 'Some spaces need more than a routine tidy. Our deep clean targets the built-up grime, dust and hard-to-reach spots that everyday cleaning misses — perfect for a spring clean, a fresh start in a new home, or simply giving your space the reset it deserves.',
+      intro: 'Our deep cleaning service targets hidden dirt, grime, and hard-to-reach areas for a complete top-to-bottom clean. Perfect for spring cleans or homes needing extra attention.',
       includes: [
         'Detailed dusting including skirting & ledges', 'Air vents, fans & light fittings cleaned',
         'Cobwebs removed throughout', 'Kitchen detailed — splashback, rangehood & exterior cupboards',
@@ -300,7 +303,7 @@ export const NG = {
     },
     window: {
       tagline: 'Crystal-clear, streak-free glass',
-      intro: 'Clean windows transform a space — letting in more light and instantly lifting the whole room. We clean interior and exterior glass, frames, sills and tracks for a streak-free shine that makes your home or business look its best.',
+      intro: 'Enjoy crystal-clear windows with our professional window cleaning service. We clean interior and exterior glass surfaces for a streak-free shine and brighter space.',
       includes: [
         'Interior & exterior glass cleaned', 'Streak-free, lint-free finish',
         'Frames & sills wiped down', 'Window tracks detailed',
@@ -320,7 +323,7 @@ export const NG = {
     },
     regular: {
       tagline: 'A consistently fresh, tidy home',
-      intro: 'Keep your home effortlessly clean with a routine that fits your life. Whether weekly, fortnightly or monthly, the same detail-focused standard is delivered every visit — so you come home to fresh, welcoming spaces without lifting a finger.',
+      intro: 'Keep your home fresh and tidy with our regular residential cleaning service. We provide reliable weekly, fortnightly, or monthly cleaning tailored to your lifestyle and needs.',
       includes: [
         'Dusting of surfaces & furniture', 'Vacuum & mop all floors',
         'Kitchen benches, sink & exterior cupboards', 'Bathrooms — toilet, shower, sink & mirrors',
@@ -340,7 +343,7 @@ export const NG = {
     },
     office: {
       tagline: 'A clean, healthy, productive workplace',
-      intro: 'A clean workplace makes a real difference — to staff wellbeing, productivity and the impression you make on clients. We deliver reliable, discreet commercial cleaning on a schedule that suits your business, including after-hours so your day is never interrupted.',
+      intro: 'Create a clean and productive workplace with our office cleaning service. We deliver reliable and professional cleaning solutions to keep your office hygienic, organised, and welcoming.',
       includes: [
         'Workstations & surfaces sanitised', 'Kitchens & break rooms cleaned',
         'Restrooms sanitised & restocked', 'Floors vacuumed & mopped',
@@ -358,9 +361,29 @@ export const NG = {
         { q: 'Is your team insured?', a: 'Yes. We’re a registered, locally owned business and treat every workplace with care and professionalism.' },
       ],
     },
+    school: {
+      tagline: 'Safe, healthy spaces for learning',
+      intro: 'Safe, thorough cleaning for schools and childcare centres. We use child-friendly products to maintain a hygienic, healthy environment for students and staff.',
+      includes: [
+        'Classrooms & learning spaces cleaned', 'Bathrooms sanitised & restocked',
+        'Kitchen & staffroom cleaned', 'Hallways & reception areas mopped',
+        'Bins emptied & replaced', 'Hard surfaces & desks disinfected',
+        'Windows & glass wiped down', 'Child-safe, eco-friendly products used',
+      ],
+      facts: [
+        { ic: 'building', label: 'Best for', value: 'Schools & childcare centres' },
+        { ic: 'leaf',     label: 'Products', value: 'Child-safe & eco-friendly' },
+        { ic: 'clock',   label: 'Scheduling', value: 'After hours & weekends' },
+      ],
+      faqs: [
+        { q: 'Do you clean after hours?', a: 'Yes — we schedule cleans outside school hours to avoid disruption to students and staff.' },
+        { q: 'Are your products safe for children?', a: 'Absolutely. We use child-safe, non-toxic and eco-friendly products throughout every clean.' },
+        { q: 'Can you provide a regular schedule?', a: 'Yes. We offer flexible daily, weekly or fortnightly schedules to keep your facility consistently clean and healthy.' },
+      ],
+    },
     airbnb: {
       tagline: 'Guest-ready, every single turnover',
-      intro: 'Great reviews start with a spotless space. We keep your short-stay property consistently guest-ready between bookings — cleaning, resetting and presenting every room to hotel standard so your guests are impressed the moment they walk in.',
+      intro: 'Keep your Airbnb guest-ready with our reliable cleaning service. We ensure every room is spotless, refreshed, and welcoming, helping you maintain excellent guest reviews and a professional presentation.',
       includes: [
         'Full clean between every stay', 'Fresh linen & towels changed',
         'Beds made & rooms styled', 'Kitchen reset & dishes done',

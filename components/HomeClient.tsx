@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Nav } from './Nav';
 import { Hero } from './Hero';
+import type { QuoteData } from './QuoteEstimator';
 import { WhyUs } from './WhyUs';
 import { Services } from './Services';
 import { HowItWorks } from './HowItWorks';
@@ -15,13 +16,30 @@ import { Footer } from './Footer';
 import { BookingModal } from './BookingModal';
 import { NG } from '@/lib/data';
 
+
+
 export function HomeClient() {
-  const [booking, setBooking] = useState<{ open: boolean; service: string | null }>({ open: false, service: null });
+  const [booking, setBooking] = useState<{ open: boolean; service: string | null; pricingMode: 'size' | 'hourly'; beds: number | null; baths: number | null; hours: number | null; halfHour: boolean; frequency: string | null; addons: string[] | null; carpetRooms: number | null }>({ open: false, service: null, pricingMode: 'size', beds: null, baths: null, hours: null, halfHour: false, frequency: null, addons: null, carpetRooms: null });
   const [highlight, setHighlight] = useState<string | null>(null);
   const [active, setActive] = useState('home');
 
   const openBooking = (service?: string) =>
-    setBooking({ open: true, service: typeof service === 'string' ? service : null });
+    setBooking({ open: true, service: typeof service === 'string' ? service : null, pricingMode: 'size', beds: null, baths: null, hours: null, halfHour: false, frequency: null, addons: null, carpetRooms: null });
+
+  const openBookingFromQuote = (data: QuoteData) =>
+    setBooking({
+      open: true,
+      service: data.svc,
+      pricingMode: data.mode,
+      beds: data.mode === 'size' ? data.beds : null,
+      baths: data.mode === 'size' ? data.baths : null,
+      hours: data.mode === 'hourly' ? data.hours : null,
+      halfHour: data.mode === 'hourly' ? data.halfHour : false,
+      frequency: data.freq,
+      addons: null,
+      carpetRooms: null,
+    });
+
   const closeBooking = () => setBooking((b) => ({ ...b, open: false }));
 
   const openChecklist = (plan?: string) => {
@@ -57,7 +75,7 @@ export function HomeClient() {
     <>
       <Nav active={active} onBook={() => openBooking()} />
       <main>
-        <Hero onBook={() => openBooking()} />
+        <Hero onBook={(data) => data ? openBookingFromQuote(data) : openBooking()} />
         <WhyUs />
         <Services onBook={openBooking} />
         <HowItWorks onBook={() => openBooking()} />
@@ -68,7 +86,7 @@ export function HomeClient() {
         <Contact />
       </main>
       <Footer onBook={() => openBooking()} />
-      <BookingModal open={booking.open} onClose={closeBooking} initialService={booking.service} />
+      <BookingModal open={booking.open} onClose={closeBooking} initialService={booking.service} initialPricingMode={booking.pricingMode} initialBeds={booking.beds} initialBaths={booking.baths} initialHours={booking.hours} initialHalfHour={booking.halfHour} initialFrequency={booking.frequency} initialAddons={booking.addons} initialCarpetRooms={booking.carpetRooms} />
     </>
   );
 }

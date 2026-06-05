@@ -10,18 +10,6 @@ import { BookingModal } from './BookingModal';
 import { Icon } from './Icon';
 import { NG } from '@/lib/data';
 
-function Faq({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className={'faq' + (open ? ' open' : '')}>
-      <button className="faq-q" onClick={() => setOpen(!open)} aria-expanded={open}>
-        <span>{q}</span>
-        <span className="faq-ic"><Icon name={open ? 'close' : 'arrow'} size={16} /></span>
-      </button>
-      <div className="faq-a"><p>{a}</p></div>
-    </div>
-  );
-}
 
 export function ServiceClient({ serviceKey }: { serviceKey: string }) {
   const svc = NG.services.find((s) => s.key === serviceKey) || NG.services[0];
@@ -66,7 +54,7 @@ export function ServiceClient({ serviceKey }: { serviceKey: string }) {
               </div>
               <div className="sv-hero-media">
                 <div className="pic" style={{ borderRadius: 'var(--r-xl)', aspectRatio: '5/4.4', overflow: 'hidden', position: 'relative', boxShadow: 'var(--shadow-lg)' }}>
-                  <Image src={NG.IMG.svc[svc.img]} alt={svc.title} fill style={{ objectFit: 'cover' }} />
+                  <Image src={NG.IMG.svc[svc.img]} alt={svc.title} fill sizes="(max-width: 920px) 100vw, 50vw" style={{ objectFit: 'cover' }} />
                 </div>
               </div>
             </div>
@@ -127,68 +115,11 @@ export function ServiceClient({ serviceKey }: { serviceKey: string }) {
                   <Icon name="phone" size={16} /> Call {NG.biz.phone}
                 </a>
                 <div className="qc-rows">
-                  <div className="qc-row"><Icon name="clock" size={16} /><span>Mon–Fri 8am–5pm · Sat–Sun 9am–5pm</span></div>
+                  <div className="qc-row"><Icon name="clock" size={16} /><span>8am – 5pm Monday to Friday</span></div>
                   <div className="qc-row"><Icon name="pin" size={16} /><span>Servicing greater Perth</span></div>
                   <div className="qc-row"><Icon name="shield" size={16} /><span>Locally owned · ABN {NG.biz.abn}</span></div>
                 </div>
               </aside>
-            </div>
-          </div>
-        </section>
-
-        {/* WHY US */}
-        <section className="sv-why">
-          <div className="wrap">
-            <div className="sec-head center">
-              <span className="eyebrow"><span className="dot"></span>Why NG Clean</span>
-              <h2 className="h-section">Why choose us for your {svc.title.toLowerCase()}</h2>
-            </div>
-            <div className="why-grid">
-              {NG.why.map((w, i) => (
-                <div className="why-card" key={i}>
-                  <span className="why-ic"><Icon name={w.icon} size={22} /></span>
-                  <h3>{w.t}</h3>
-                  <p>{w.d}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* PROCESS */}
-        <section className="sv-process">
-          <div className="wrap">
-            <div className="sec-head center">
-              <span className="eyebrow"><span className="dot"></span>How it works</span>
-              <h2 className="h-section">Simple from quote to spotless</h2>
-            </div>
-            <div className="proc-grid">
-              {NG.steps.map((s, i) => (
-                <div className="proc-step" key={i}>
-                  <div className="proc-n">{i + 1}</div>
-                  <h4>{s.title}</h4>
-                  <p>{s.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section className="sv-faq">
-          <div className="wrap">
-            <div className="sv-faq-grid">
-              <div className="sv-faq-head">
-                <span className="eyebrow"><span className="dot"></span>FAQs</span>
-                <h2 className="h-section" style={{ marginTop: 16 }}>Good to know</h2>
-                <p className="lead" style={{ marginTop: 12 }}>Still have a question? Give us a call — we&apos;re happy to help.</p>
-                <a className="btn btn-dark" href={'tel:' + NG.biz.phoneRaw} style={{ marginTop: 20 }}>
-                  <Icon name="phone" size={16} /> {NG.biz.phone}
-                </a>
-              </div>
-              <div className="sv-faq-list">
-                {det.faqs.map((f, i) => <Faq key={i} q={f.q} a={f.a} />)}
-              </div>
             </div>
           </div>
         </section>
@@ -204,7 +135,7 @@ export function ServiceClient({ serviceKey }: { serviceKey: string }) {
               {related.map((r) => (
                 <Link className="rel-card" key={r.key} href={'/services/' + r.key}>
                   <div className="rel-photo" style={{ position: 'relative' }}>
-                    <Image src={NG.IMG.svc[r.img]} alt={r.title} fill style={{ objectFit: 'cover' }} loading="lazy" />
+                    <Image src={NG.IMG.svc[r.img]} alt={r.title} fill sizes="(max-width: 680px) 100vw, 25vw" style={{ objectFit: 'cover' }} loading="lazy" />
                   </div>
                   <div className="rel-body">
                     <span className="rel-cat"><Icon name={r.icon} size={13} />{r.cat}</span>

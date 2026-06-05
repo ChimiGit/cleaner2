@@ -31,7 +31,7 @@ export function About({ onBook }: AboutProps) {
           <Reveal delay={120}>
             <div className="about-media">
               <div className="pic" style={{ aspectRatio: '4/4' }}>
-                <Image src={NG.IMG.about} alt="NG Clean cleaning a kitchen" fill style={{ objectFit: 'cover' }} loading="lazy" />
+                <Image src={NG.IMG.about} alt="NG Clean cleaning a kitchen" fill sizes="(max-width: 920px) 100vw, 50vw" style={{ objectFit: 'cover' }} loading="lazy" />
               </div>
               <div className="trusted">
                 <div className="t-ic"><Icon name="sparkle" size={22} /></div>

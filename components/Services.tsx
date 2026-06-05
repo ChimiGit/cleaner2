@@ -35,7 +35,7 @@ export function Services({ onBook }: ServicesProps) {
           {items.map((s) => (
             <Reveal className="scard" key={s.key}>
               <Link className="scard-photo" href={'/services/' + s.key} aria-label={s.title + ' details'}>
-                <Image src={NG.IMG.svc[s.img]} alt={s.title} fill style={{ objectFit: 'cover' }} loading="lazy" />
+                <Image src={NG.IMG.svc[s.img]} alt={s.title} fill sizes="(max-width: 680px) 100vw, (max-width: 920px) 50vw, 33vw" style={{ objectFit: 'cover' }} loading="lazy" />
                 <span className="scard-cat"><Icon name={s.icon} size={13} />{s.cat}</span>
               </Link>
               <div className="scard-body">
