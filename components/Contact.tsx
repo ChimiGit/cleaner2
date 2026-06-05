@@ -133,6 +133,7 @@ export function Contact() {
                     {NG.services.map((s) => (
                       <option key={s.key} value={s.title}>{s.title}</option>
                     ))}
+                    <option value="Other">Other</option>
                   </select>
                 </div>
                 <div className="field">
