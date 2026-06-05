@@ -29,7 +29,7 @@ export function Hero({ onBook }: HeroProps) {
                 <a className="btn btn-light" href={'tel:' + NG.biz.phoneRaw}>
                   <Icon name="phone" size={16} /> Call {NG.biz.phone}
                 </a>
-                <span className="hero-hours"><Icon name="clock" size={14} />8am – 5pm Mon to Fri</span>
+                <span className="hero-hours"><Icon name="clock" size={14} />Mon–Fri 8am–5pm · Sat–Sun 9am–5pm</span>
               </div>
               <div className="hero-rating">
                 <Stars n={5} /><b>5.0</b><span>Loved by Perth homes &amp; businesses</span>

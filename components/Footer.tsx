@@ -42,7 +42,8 @@ export function Footer({ onBook, base = '' }: FooterProps) {
           <div className="foot-col">
             <h5>Contact</h5>
             <a href={'tel:' + NG.biz.phoneRaw}>{NG.biz.phone}</a>
-            <span className="foot-static">8am – 5pm Monday to Friday</span>
+            <span className="foot-static">Mon – Fri: 8am – 5pm</span>
+            <span className="foot-static">Sat – Sun: 9am – 5pm</span>
             <span className="foot-static">ABN {NG.biz.abn}</span>
             <button className="btn btn-primary btn-sm" onClick={onBook} style={{ marginTop: 12 }}>Book now</button>
           </div>

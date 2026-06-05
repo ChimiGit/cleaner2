@@ -16,6 +16,7 @@ export const NG = {
     city: 'Perth',
     hours: [
       { d: 'Monday – Friday', t: '8am – 5pm' },
+      { d: 'Saturday – Sunday', t: '9am – 5pm' },
     ],
   },
 
@@ -216,8 +217,7 @@ export const NG = {
   },
 
   contactBlurbs: [
-    'We provide reliable, professional cleaning tailored to your needs — contact us today for a free quote.',
-    'Fast, affordable and trusted cleaning for homes and businesses across Perth.',
+    'We provide reliable and professional cleaning services tailored to your needs. Contact us today for a free quote.',
   ],
 
   details: {

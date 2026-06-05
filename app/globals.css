@@ -398,7 +398,10 @@ section { position: relative; scroll-margin-top: 104px; }
 .contact { padding: 30px 0 90px; }
 .contact-card { display: grid; grid-template-columns: 0.92fr 1.08fr; border-radius: var(--r-xl); overflow: hidden; box-shadow: var(--shadow-lg); }
 .contact-info { background: var(--navy-deep); color: #fff; padding: 44px clamp(28px,3.4vw,44px); }
-.ci-lead { margin: 16px 0 28px; color: rgba(255,255,255,.78); font-size: 15.5px; line-height: 1.58; }
+.ci-lead { margin: 16px 0 10px; color: rgba(255,255,255,.78); font-size: 15.5px; line-height: 1.58; }
+.ci-bullets { margin: 0 0 24px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.ci-bullets li { color: rgba(255,255,255,.72); font-size: 14.5px; line-height: 1.5; padding-left: 16px; position: relative; }
+.ci-bullets li::before { content: '•'; position: absolute; left: 0; color: var(--green); font-size: 14px; }
 .ci-rows { display: flex; flex-direction: column; gap: 18px; }
 .ci-row { display: flex; align-items: flex-start; gap: 14px; color: #fff; }
 .ci-ic { width: 44px; height: 44px; border-radius: 12px; background: rgba(127,181,57,.18); color: var(--green); display: grid; place-items: center; flex: none; }

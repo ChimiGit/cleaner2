@@ -115,7 +115,7 @@ export function ServiceClient({ serviceKey }: { serviceKey: string }) {
                   <Icon name="phone" size={16} /> Call {NG.biz.phone}
                 </a>
                 <div className="qc-rows">
-                  <div className="qc-row"><Icon name="clock" size={16} /><span>8am – 5pm Monday to Friday</span></div>
+                  <div className="qc-row"><Icon name="clock" size={16} /><span>Mon – Fri: 8am – 5pm · Sat – Sun: 9am – 5pm</span></div>
                   <div className="qc-row"><Icon name="pin" size={16} /><span>Servicing greater Perth</span></div>
                   <div className="qc-row"><Icon name="shield" size={16} /><span>Locally owned · ABN {NG.biz.abn}</span></div>
                 </div>
