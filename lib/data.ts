@@ -31,7 +31,7 @@ export const NG = {
       carpet: '/assets/Carpet Cleaning.jpg',
       oven: '/assets/Oven Cleaning.png',
       window: '/assets/Window Cleaning.jpg',
-      regular: px(4108715, 900),
+      regular: '/assets/Regular Residential Cleaning.png',
       office: '/assets/Office Cleaning.png',
       airbnb: px(4099354, 900),
       school: px(8613089, 900),
