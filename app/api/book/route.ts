@@ -28,11 +28,12 @@ function row(label: string, value: string) {
 
 export async function POST(req: NextRequest) {
   const {
-    name, email, phone, address,
+    name, email, phone, address, suburb,
     service, pricingMode,
     beds, baths, hours,
     frequency, date, time,
     addons, carpetRooms,
+    entryMethod, parking,
   } = await req.json();
 
   const sizeInfo = pricingMode === 'hourly'
@@ -68,7 +69,9 @@ export async function POST(req: NextRequest) {
             ${row('Name', name || '—')}
             ${row('Email', `<a href="mailto:${email}" style="color:#143258">${email}</a>`)}
             ${row('Phone', `<a href="tel:${phone}" style="color:#143258">${phone}</a>`)}
-            ${row('Address', address || '—')}
+            ${row('Address', [address, suburb].filter(Boolean).join(', ') || '—')}
+            ${row('Entry', entryMethod || '—')}
+            ${row('Parking', parking || '—')}
           </table>
           <p style="padding:16px;color:#7c8896;font-size:12px;margin:0">
             Sent from the NG Clean website. Reply directly to this email to contact the customer.

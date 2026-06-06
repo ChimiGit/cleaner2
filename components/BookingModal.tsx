@@ -4,16 +4,8 @@ import { NG } from "@/lib/data";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Icon } from "./Icon";
-
-const REGULAR_TABLE: [number, number, number][] = [
-  [1,1,120],[2,1,155],[2,2,199],[3,1,199],[3,2,235],[4,2,269],[5,3,339],
-];
-const DEEP_TABLE: [number, number, number][] = [
-  [1,1,350],[2,1,440],[2,2,540],[3,1,500],[3,2,600],[4,2,660],[5,2,720],
-];
-const VACATE_TABLE: [number, number, number][] = [
-  [1,1,387],[2,1,459],[2,2,594],[3,1,531],[3,2,639],[4,2,711],[5,2,870],
-];
+import type { PricingConfig } from "@/lib/pricing";
+import { DEFAULT_PRICING } from "@/lib/pricing";
 
 function closestPrice(table: [number, number, number][], beds: number, baths: number) {
   const exact = table.find(([b, ba]) => b === beds && ba === baths);
@@ -26,11 +18,6 @@ function closestPrice(table: [number, number, number][], beds: number, baths: nu
   return best[2];
 }
 
-const REGULAR_HOURLY: Record<string, number> = { once: 48, weekly: 45, fortnightly: 45, monthly: 48 };
-const DEEP_HOURLY = 55;
-const VACATE_HOURLY = 65;
-const DEFAULT_HOURLY = 48;
-
 type PricingMode = 'size' | 'hourly';
 
 function calcPrice(
@@ -40,35 +27,24 @@ function calcPrice(
   baths: number,
   freq: string,
   hours: number,
-  halfHour: boolean,
+  extraMins: number,
+  pricing: PricingConfig,
 ): { total: number | null } {
   if (mode === 'hourly') {
-    const h = hours + (halfHour ? 0.5 : 0);
-    if (serviceKey === 'deep')    return { total: Math.round(h * DEEP_HOURLY) };
-    if (serviceKey === 'bond')    return { total: Math.round(h * VACATE_HOURLY) };
-    if (serviceKey === 'regular') return { total: Math.round(h * (REGULAR_HOURLY[freq] ?? 48)) };
-    return { total: Math.round(h * DEFAULT_HOURLY) };
+    const h = hours + extraMins / 60;
+    if (serviceKey === 'deep')    return { total: Math.round(h * pricing.deepHourly) };
+    if (serviceKey === 'bond')    return { total: Math.round(h * pricing.vacateHourly) };
+    if (serviceKey === 'regular') return { total: Math.round(h * (pricing.regularHourly[freq as keyof typeof pricing.regularHourly] ?? pricing.defaultHourly)) };
+    return { total: Math.round(h * pricing.defaultHourly) };
   }
-  if (serviceKey === 'regular') return { total: closestPrice(REGULAR_TABLE, beds, baths) };
-  if (serviceKey === 'deep')    return { total: closestPrice(DEEP_TABLE, beds, baths) };
-  if (serviceKey === 'bond')    return { total: closestPrice(VACATE_TABLE, beds, baths) };
+  if (serviceKey === 'regular') return { total: closestPrice(pricing.regularTable, beds, baths) };
+  if (serviceKey === 'deep')    return { total: closestPrice(pricing.deepTable, beds, baths) };
+  if (serviceKey === 'bond')    return { total: closestPrice(pricing.vacateTable, beds, baths) };
   return { total: null };
 }
 
-const ADDONS = [
-  { id: 'fridge',  label: 'Inside Fridge',             price: 59,  unit: ''      },
-  { id: 'windows', label: 'Exterior Windows',           price: 80,  unit: ''      },
-  { id: 'carpet',  label: 'Carpet Steam Clean',         price: 35,  unit: '/room' },
-  { id: 'balcony', label: 'Balcony Cleaning',           price: 35,  unit: ''      },
-  { id: 'walls',   label: 'Wall Deep Cleaning',         price: 180, unit: ''      },
-  { id: 'garage',  label: 'Garage Sweep',               price: 29,  unit: ''      },
-  { id: 'patio',   label: 'Patio / Alfresco',           price: 29,  unit: ''      },
-  { id: 'tiles',   label: 'Professional Tile Cleaning', price: 150, unit: ''      },
-  { id: 'blinds',  label: 'Blinds Wet Wipe',            price: 120, unit: ''      },
-];
-
-function calcAddonsTotal(selected: Set<string>, carpetRooms: number) {
-  return ADDONS.reduce((sum, a) => {
+function calcAddonsTotal(selected: Set<string>, carpetRooms: number, addons: PricingConfig['addons']) {
+  return addons.reduce((sum, a) => {
     if (!selected.has(a.id)) return sum;
     return sum + (a.id === 'carpet' ? a.price * carpetRooms : a.price);
   }, 0);
@@ -79,6 +55,11 @@ interface BookingForm {
   email: string;
   phone: string;
   address: string;
+  suburb: string;
+  entryMethod: string;
+  entryOther: string;
+  parking: string;
+  parkingOther: string;
 }
 
 function Stepper({
@@ -141,12 +122,13 @@ function InlineStepper({
 interface BookingModalProps {
   open: boolean;
   onClose: () => void;
+  pricing?: PricingConfig;
   initialService?: string | null;
   initialPricingMode?: PricingMode | null;
   initialBeds?: number | null;
   initialBaths?: number | null;
   initialHours?: number | null;
-  initialHalfHour?: boolean;
+  initialExtraMins?: number;
   initialFrequency?: string | null;
   initialAddons?: string[] | null;
   initialCarpetRooms?: number | null;
@@ -155,12 +137,13 @@ interface BookingModalProps {
 export function BookingModal({
   open,
   onClose,
+  pricing = DEFAULT_PRICING,
   initialService,
   initialPricingMode,
   initialBeds,
   initialBaths,
   initialHours,
-  initialHalfHour = false,
+  initialExtraMins = 0,
   initialFrequency,
   initialAddons,
   initialCarpetRooms,
@@ -173,7 +156,7 @@ export function BookingModal({
   const [beds, setBeds] = useState(2);
   const [baths, setBaths] = useState(1);
   const [hours, setHours] = useState(3);
-  const [halfHour, setHalfHour] = useState(false);
+  const [extraMins, setExtraMins] = useState(0);
   const [frequency, setFrequency] = useState<string>("once");
   const [date, setDate] = useState("");
   const [time, setTime] = useState<string | null>(null);
@@ -194,12 +177,12 @@ export function BookingModal({
   const nameVal = watch("name", "");
   const svc = NG.services.find((s) => s.key === service);
   const price = useMemo(
-    () => calcPrice(pricingMode, service, beds, baths, frequency, hours, halfHour),
-    [pricingMode, service, beds, baths, frequency, hours, halfHour],
+    () => calcPrice(pricingMode, service, beds, baths, frequency, hours, extraMins, pricing),
+    [pricingMode, service, beds, baths, frequency, hours, extraMins, pricing],
   );
-  const addonsTotal = useMemo(() => calcAddonsTotal(addons, carpetRooms), [addons, carpetRooms]);
+  const addonsTotal = useMemo(() => calcAddonsTotal(addons, carpetRooms, pricing.addons), [addons, carpetRooms, pricing.addons]);
   const grandTotal = price.total !== null ? price.total + addonsTotal : null;
-  const hourlyRate = service === 'deep' ? DEEP_HOURLY : service === 'bond' ? VACATE_HOURLY : (REGULAR_HOURLY[frequency] ?? DEFAULT_HOURLY);
+  const hourlyRate = service === 'deep' ? pricing.deepHourly : service === 'bond' ? pricing.vacateHourly : (pricing.regularHourly[frequency as keyof typeof pricing.regularHourly] ?? pricing.defaultHourly);
 
   const toggleAddon = (id: string) => setAddons(prev => {
     const next = new Set(prev);
@@ -215,7 +198,7 @@ export function BookingModal({
       setBeds(initialBeds ?? 2);
       setBaths(initialBaths ?? 1);
       setHours(initialHours ?? 3);
-      setHalfHour(initialHalfHour);
+      setExtraMins(initialExtraMins);
       setFrequency(initialFrequency || "once");
       setDate("");
       setTime(null);
@@ -232,7 +215,7 @@ export function BookingModal({
     initialBeds,
     initialBaths,
     initialHours,
-    initialHalfHour,
+    initialExtraMins,
     initialFrequency,
     initialAddons,
     initialCarpetRooms,
@@ -284,7 +267,7 @@ export function BookingModal({
           pricingMode,
           beds: pricingMode === 'size' ? beds : null,
           baths: pricingMode === 'size' ? baths : null,
-          hours: pricingMode === 'hourly' ? hours + (halfHour ? 0.5 : 0) : null,
+          hours: pricingMode === 'hourly' ? hours + extraMins / 60 : null,
           frequency,
           date,
           time,
@@ -346,6 +329,8 @@ export function BookingModal({
                   onClick={() => {
                     setService(s.key);
                     setSvcErr(false);
+                    setStep(1);
+                    scrollTop();
                   }}
                 >
                   <span className="opt-ic">
@@ -392,14 +377,17 @@ export function BookingModal({
                 <div className="f-row">
                   <Stepper label="Hours" value={hours} onChange={setHours} min={2} max={8} />
                   <div className="field">
-                    <label>Plus</label>
-                    <button
-                      type="button"
-                      className={'qe-half' + (halfHour ? ' active' : '')}
-                      onClick={() => setHalfHour(!halfHour)}
+                    <label>Extra mins</label>
+                    <select
+                      className="qe-select"
+                      value={extraMins}
+                      onChange={(e) => setExtraMins(Number(e.target.value))}
                     >
-                      +30 min
-                    </button>
+                      <option value={0}>None</option>
+                      {[5,10,15,20,25,30,35,40,45,50,55].map(m => (
+                        <option key={m} value={m}>+{m} min</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               )}
@@ -426,7 +414,7 @@ export function BookingModal({
               <div className="field">
                 <label>Add-ons</label>
                 <div className="qe-addons grid">
-                  {ADDONS.map((a) => {
+                  {pricing.addons.map((a) => {
                     const on = addons.has(a.id);
                     return (
                       <div key={a.id} className="qe-addon-row">
@@ -529,16 +517,79 @@ export function BookingModal({
                   <div className="msg">{errors.email.message}</div>
                 )}
               </div>
-              <div className={"field" + (errors.address ? " err" : "")}>
-                <label>Address</label>
-                <input
-                  {...register("address", { required: "Required" })}
-                  placeholder="123 Maple Ave, Apt 4"
-                />
-                {errors.address && (
-                  <div className="msg">{errors.address.message}</div>
+              <div className="f-row">
+                <div className={"field" + (errors.address ? " err" : "")}>
+                  <label>Address</label>
+                  <input
+                    {...register("address", { required: "Required" })}
+                    placeholder="123 Maple Ave, Apt 4"
+                  />
+                  {errors.address && (
+                    <div className="msg">{errors.address.message}</div>
+                  )}
+                </div>
+                <div className={"field" + (errors.suburb ? " err" : "")}>
+                  <label>Suburb</label>
+                  <input
+                    {...register("suburb", { required: "Required" })}
+                    placeholder="Nollamara"
+                  />
+                  {errors.suburb && (
+                    <div className="msg">{errors.suburb.message}</div>
+                  )}
+                </div>
+              </div>
+              <div className={"field" + (errors.entryMethod ? " err" : "")}>
+                <label>How can we get in? <span style={{ color: '#c5412f' }}>*</span></label>
+                <select {...register("entryMethod", { validate: v => !!v || "Please select an option" })}>
+                  <option value="">Select…</option>
+                  <option>I will be home</option>
+                  <option>I will leave a key</option>
+                  <option>I can provide lockbox access</option>
+                  <option>I can provide access code</option>
+                  <option>Other</option>
+                </select>
+                {errors.entryMethod && (
+                  <div className="msg">{errors.entryMethod.message}</div>
                 )}
               </div>
+              {watch("entryMethod") === "Other" && (
+                <div className={"field" + (errors.entryOther ? " err" : "")}>
+                  <label>Please describe</label>
+                  <input
+                    {...register("entryOther", { required: "Required" })}
+                    placeholder="Describe how we can get in…"
+                  />
+                  {errors.entryOther && (
+                    <div className="msg">{errors.entryOther.message}</div>
+                  )}
+                </div>
+              )}
+              <div className={"field" + (errors.parking ? " err" : "")}>
+                <label>Where can we park? <span style={{ color: '#c5412f' }}>*</span></label>
+                <select {...register("parking", { validate: v => !!v || "Please select an option" })}>
+                  <option value="">Select…</option>
+                  <option>Park in the driveway</option>
+                  <option>Street parking</option>
+                  <option>Paid parking is available</option>
+                  <option>Other</option>
+                </select>
+                {errors.parking && (
+                  <div className="msg">{errors.parking.message}</div>
+                )}
+              </div>
+              {watch("parking") === "Other" && (
+                <div className={"field" + (errors.parkingOther ? " err" : "")}>
+                  <label>Please describe</label>
+                  <input
+                    {...register("parkingOther", { required: "Required" })}
+                    placeholder="Describe parking details…"
+                  />
+                  {errors.parkingOther && (
+                    <div className="msg">{errors.parkingOther.message}</div>
+                  )}
+                </div>
+              )}
             </form>
           )}
 
@@ -565,7 +616,7 @@ export function BookingModal({
                     <div className="sr"><span>Bathrooms</span><b>{baths}</b></div>
                   </>
                 ) : (
-                  <div className="sr"><span>Duration</span><b>{hours + (halfHour ? 0.5 : 0)} hrs · ${hourlyRate}/hr</b></div>
+                  <div className="sr"><span>Duration</span><b>{extraMins > 0 ? `${hours}h ${extraMins}m` : `${hours}h`} · ${hourlyRate}/hr</b></div>
                 )}
                 <div className="sr">
                   <span>Frequency</span>
@@ -582,7 +633,7 @@ export function BookingModal({
                   <div className="sr">
                     <span>Add-ons</span>
                     <b style={{ textAlign: 'right' }}>
-                      {ADDONS.filter(a => addons.has(a.id))
+                      {pricing.addons.filter(a => addons.has(a.id))
                         .map(a => a.id === 'carpet' ? `${a.label} (${carpetRooms} rooms)` : a.label)
                         .join(', ')}
                     </b>
@@ -603,6 +654,14 @@ export function BookingModal({
                   </b>
                 </div>
                 <div className="sr">
+                  <span>Entry</span>
+                  <b>{(watch as (f: string) => string)("entryMethod") || "—"}</b>
+                </div>
+                <div className="sr">
+                  <span>Parking</span>
+                  <b>{(watch as (f: string) => string)("parking") || "—"}</b>
+                </div>
+                <div className="sr">
                   <span>Quote</span>
                   <b>Confirmed by phone</b>
                 </div>
@@ -618,7 +677,7 @@ export function BookingModal({
           )}
         </div>
 
-        {step < 3 && (
+        {step > 0 && step < 3 && (
           <div className="modal-body" style={{ paddingTop: 0 }}>
             {step >= 1 && service && (
               <div className="modal-price-strip">
@@ -632,7 +691,7 @@ export function BookingModal({
                 </div>
                 <span className="modal-price-note" style={{ textAlign: 'right' }}>
                   {pricingMode === 'hourly'
-                    ? `${hours + (halfHour ? 0.5 : 0)} hrs · $${hourlyRate}/hr${addonsTotal > 0 ? ` + $${addonsTotal} add-ons` : ''}`
+                    ? `${extraMins > 0 ? `${hours}h ${extraMins}m` : `${hours}h`} · $${hourlyRate}/hr${addonsTotal > 0 ? ` + $${addonsTotal} add-ons` : ''}`
                     : grandTotal !== null && addonsTotal > 0
                       ? `Incl. $${addonsTotal} add-ons · guide price`
                       : 'Guide price · confirmed by phone'}

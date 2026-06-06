@@ -2,26 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { Icon } from './Icon';
-
-// Fixed package prices [beds, baths, price]
-const REGULAR_TABLE: [number, number, number][] = [
-  [1, 1, 120], [2, 1, 155], [2, 2, 199],
-  [3, 1, 199], [3, 2, 235], [4, 2, 269], [5, 3, 339],
-];
-const DEEP_TABLE: [number, number, number][] = [
-  [1, 1, 350], [2, 1, 440], [2, 2, 540],
-  [3, 1, 500], [3, 2, 600], [4, 2, 660], [5, 2, 720],
-];
-const VACATE_TABLE: [number, number, number][] = [
-  [1, 1, 387], [2, 1, 459], [2, 2, 594],
-  [3, 1, 531], [3, 2, 639], [4, 2, 711], [5, 2, 870],
-];
-
-// Hourly rates
-const REGULAR_HOURLY: Record<string, number> = { once: 48, weekly: 45, fortnightly: 45, monthly: 48 };
-const DEEP_HOURLY = 55;
-const VACATE_HOURLY = 65;
-const DEFAULT_HOURLY = 48;
+import type { PricingConfig } from '@/lib/pricing';
+import { DEFAULT_PRICING } from '@/lib/pricing';
 
 function closestPrice(table: [number, number, number][], beds: number, baths: number) {
   const exact = table.find(([b, ba]) => b === beds && ba === baths);
@@ -51,19 +33,18 @@ const SERVICES: { id: ServiceType; label: string }[] = [
   { id: 'school',  label: 'School / Childcare Cleaning' },
 ];
 
-function calcPrice(mode: Mode, svc: ServiceType, freq: string, beds: number, baths: number, hours: number, halfHour: boolean): number | null {
+function calcPrice(mode: Mode, svc: ServiceType, freq: string, beds: number, baths: number, hours: number, extraMins: number, pricing: PricingConfig): number | null {
   if (mode === 'hourly') {
-    const h = hours + (halfHour ? 0.5 : 0);
-    if (svc === 'deep') return Math.round(h * DEEP_HOURLY);
-    if (svc === 'bond') return Math.round(h * VACATE_HOURLY);
-    if (svc === 'regular') return Math.round(h * (REGULAR_HOURLY[freq] ?? 48));
-    return Math.round(h * DEFAULT_HOURLY);
+    const h = hours + extraMins / 60;
+    if (svc === 'deep') return Math.round(h * pricing.deepHourly);
+    if (svc === 'bond') return Math.round(h * pricing.vacateHourly);
+    if (svc === 'regular') return Math.round(h * (pricing.regularHourly[freq as keyof typeof pricing.regularHourly] ?? pricing.defaultHourly));
+    return Math.round(h * pricing.defaultHourly);
   }
-  // By size
-  if (svc === 'regular') return closestPrice(REGULAR_TABLE, beds, baths);
-  if (svc === 'deep')    return closestPrice(DEEP_TABLE, beds, baths);
-  if (svc === 'bond')    return closestPrice(VACATE_TABLE, beds, baths);
-  return null; // other services — quote by phone
+  if (svc === 'regular') return closestPrice(pricing.regularTable, beds, baths);
+  if (svc === 'deep')    return closestPrice(pricing.deepTable, beds, baths);
+  if (svc === 'bond')    return closestPrice(pricing.vacateTable, beds, baths);
+  return null;
 }
 
 
@@ -83,25 +64,26 @@ export interface QuoteData {
   beds: number;
   baths: number;
   hours: number;
-  halfHour: boolean;
+  extraMins: number;
   freq: string;
 }
 
 interface QuoteEstimatorProps {
   onBook: (data: QuoteData) => void;
+  pricing?: PricingConfig;
 }
 
-export function QuoteEstimator({ onBook }: QuoteEstimatorProps) {
+export function QuoteEstimator({ onBook, pricing = DEFAULT_PRICING }: QuoteEstimatorProps) {
   const [mode, setMode] = useState<Mode>('size');
   const [beds, setBeds] = useState(2);
   const [baths, setBaths] = useState(1);
   const [hours, setHours] = useState(3);
-  const [halfHour, setHalfHour] = useState(false);
+  const [extraMins, setExtraMins] = useState(0);
   const [svc, setSvc] = useState<ServiceType>('regular');
   const [freq, setFreq] = useState('once');
-  const total = useMemo(() => calcPrice(mode, svc, freq, beds, baths, hours, halfHour), [mode, svc, freq, beds, baths, hours, halfHour]);
+  const total = useMemo(() => calcPrice(mode, svc, freq, beds, baths, hours, extraMins, pricing), [mode, svc, freq, beds, baths, hours, extraMins, pricing]);
 
-  const hourlyRate = svc === 'deep' ? DEEP_HOURLY : svc === 'bond' ? VACATE_HOURLY : (REGULAR_HOURLY[freq] ?? DEFAULT_HOURLY);
+  const hourlyRate = svc === 'deep' ? pricing.deepHourly : svc === 'bond' ? pricing.vacateHourly : (pricing.regularHourly[freq as keyof typeof pricing.regularHourly] ?? pricing.defaultHourly);
 
   return (
     <div className="qe-card">
@@ -133,10 +115,13 @@ export function QuoteEstimator({ onBook }: QuoteEstimatorProps) {
               <Stepper value={hours} onChange={setHours} min={2} max={8} />
             </div>
             <div className="qe-field">
-              <label className="qe-label">Plus</label>
-              <button className={'qe-half' + (halfHour ? ' active' : '')} onClick={() => setHalfHour(!halfHour)}>
-                +30 min
-              </button>
+              <label className="qe-label">Extra mins</label>
+              <select className="qe-select" value={extraMins} onChange={(e) => setExtraMins(Number(e.target.value))}>
+                <option value={0}>None</option>
+                {[5,10,15,20,25,30,35,40,45,50,55].map(m => (
+                  <option key={m} value={m}>+{m} min</option>
+                ))}
+              </select>
             </div>
           </div>
         )}
@@ -173,7 +158,7 @@ export function QuoteEstimator({ onBook }: QuoteEstimatorProps) {
             <>
               <div className="qe-price-value">${total}</div>
               <span className="qe-price-note">
-                {mode === 'hourly' ? `${hours + (halfHour ? 0.5 : 0)} hrs · $${hourlyRate}/hr` : 'guide price'}
+                {mode === 'hourly' ? `${extraMins > 0 ? `${hours}h ${extraMins}m` : `${hours}h`} · $${hourlyRate}/hr` : 'guide price'}
               </span>
             </>
           ) : (
@@ -183,7 +168,7 @@ export function QuoteEstimator({ onBook }: QuoteEstimatorProps) {
             </>
           )}
         </div>
-        <button className="btn btn-primary qe-book-btn" onClick={() => onBook({ svc, mode, beds, baths, hours, halfHour, freq })}>
+        <button className="btn btn-primary qe-book-btn" onClick={() => onBook({ svc, mode, beds, baths, hours, extraMins, freq })}>
           Book Now <Icon name="arrow" size={16} className="arr" />
         </button>
       </div>

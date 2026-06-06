@@ -15,16 +15,23 @@ import { Contact } from './Contact';
 import { Footer } from './Footer';
 import { BookingModal } from './BookingModal';
 import { NG } from '@/lib/data';
+import type { PricingConfig } from '@/lib/pricing';
+import { DEFAULT_PRICING } from '@/lib/pricing';
 
 
 
 export function HomeClient() {
-  const [booking, setBooking] = useState<{ open: boolean; service: string | null; pricingMode: 'size' | 'hourly'; beds: number | null; baths: number | null; hours: number | null; halfHour: boolean; frequency: string | null; addons: string[] | null; carpetRooms: number | null }>({ open: false, service: null, pricingMode: 'size', beds: null, baths: null, hours: null, halfHour: false, frequency: null, addons: null, carpetRooms: null });
+  const [pricing, setPricing] = useState<PricingConfig>(DEFAULT_PRICING);
+  const [booking, setBooking] = useState<{ open: boolean; service: string | null; pricingMode: 'size' | 'hourly'; beds: number | null; baths: number | null; hours: number | null; extraMins: number; frequency: string | null; addons: string[] | null; carpetRooms: number | null }>({ open: false, service: null, pricingMode: 'size', beds: null, baths: null, hours: null, extraMins: 0, frequency: null, addons: null, carpetRooms: null });
   const [highlight, setHighlight] = useState<string | null>(null);
   const [active, setActive] = useState('home');
 
+  useEffect(() => {
+    fetch('/api/pricing').then(r => r.json()).then(setPricing).catch(() => {});
+  }, []);
+
   const openBooking = (service?: string) =>
-    setBooking({ open: true, service: typeof service === 'string' ? service : null, pricingMode: 'size', beds: null, baths: null, hours: null, halfHour: false, frequency: null, addons: null, carpetRooms: null });
+    setBooking({ open: true, service: typeof service === 'string' ? service : null, pricingMode: 'size', beds: null, baths: null, hours: null, extraMins: 0, frequency: null, addons: null, carpetRooms: null });
 
   const openBookingFromQuote = (data: QuoteData) =>
     setBooking({
@@ -34,7 +41,7 @@ export function HomeClient() {
       beds: data.mode === 'size' ? data.beds : null,
       baths: data.mode === 'size' ? data.baths : null,
       hours: data.mode === 'hourly' ? data.hours : null,
-      halfHour: data.mode === 'hourly' ? data.halfHour : false,
+      extraMins: data.mode === 'hourly' ? data.extraMins : 0,
       frequency: data.freq,
       addons: null,
       carpetRooms: null,
@@ -75,7 +82,7 @@ export function HomeClient() {
     <>
       <Nav active={active} onBook={() => openBooking()} />
       <main>
-        <Hero onBook={(data) => data ? openBookingFromQuote(data) : openBooking()} />
+        <Hero onBook={(data) => data ? openBookingFromQuote(data) : openBooking()} pricing={pricing} />
         <WhyUs />
         <Services onBook={openBooking} />
         <HowItWorks onBook={() => openBooking()} />
@@ -86,7 +93,7 @@ export function HomeClient() {
         <Contact />
       </main>
       <Footer onBook={() => openBooking()} />
-      <BookingModal open={booking.open} onClose={closeBooking} initialService={booking.service} initialPricingMode={booking.pricingMode} initialBeds={booking.beds} initialBaths={booking.baths} initialHours={booking.hours} initialHalfHour={booking.halfHour} initialFrequency={booking.frequency} initialAddons={booking.addons} initialCarpetRooms={booking.carpetRooms} />
+      <BookingModal open={booking.open} onClose={closeBooking} pricing={pricing} initialService={booking.service} initialPricingMode={booking.pricingMode} initialBeds={booking.beds} initialBaths={booking.baths} initialHours={booking.hours} initialExtraMins={booking.extraMins} initialFrequency={booking.frequency} initialAddons={booking.addons} initialCarpetRooms={booking.carpetRooms} />
     </>
   );
 }

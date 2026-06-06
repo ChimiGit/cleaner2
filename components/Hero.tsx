@@ -3,12 +3,14 @@ import { Icon } from './Icon';
 import { Stars } from './Stars';
 import { NG } from '@/lib/data';
 import { QuoteEstimator, type QuoteData } from './QuoteEstimator';
+import type { PricingConfig } from '@/lib/pricing';
 
 interface HeroProps {
   onBook: (data?: QuoteData) => void;
+  pricing?: PricingConfig;
 }
 
-export function Hero({ onBook }: HeroProps) {
+export function Hero({ onBook, pricing }: HeroProps) {
   return (
     <section className="hero" id="home">
       <div className="wrap">
@@ -36,7 +38,7 @@ export function Hero({ onBook }: HeroProps) {
               </div>
             </div>
             <div className="hero-quote">
-              <QuoteEstimator onBook={(data) => onBook(data)} />
+              <QuoteEstimator onBook={(data) => onBook(data)} pricing={pricing} />
             </div>
           </div>
         </div>
