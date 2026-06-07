@@ -678,7 +678,7 @@ export function BookingModal({
         </div>
 
         {step > 0 && step < 3 && (
-          <div className="modal-body" style={{ paddingTop: 0 }}>
+          <div className="modal-body" style={{ paddingTop: 16 }}>
             {step >= 1 && service && (
               <div className="modal-price-strip">
                 <div className="modal-price-strip-left">

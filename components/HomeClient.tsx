@@ -56,7 +56,7 @@ export function HomeClient() {
   };
 
   useEffect(() => {
-    const ids = ['home', 'services', 'checklist', 'about', 'reviews', 'areas', 'contact'];
+    const ids = ['home', 'services', 'checklist', 'about', 'reviews', 'contact'];
     const pick = () => {
       const line = 130;
       const scrollY = window.scrollY;

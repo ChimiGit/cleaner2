@@ -97,9 +97,9 @@ export function Nav({ active, onBook, base = '' }: NavProps) {
               </div>
               {/* Other nav links */}
               {NG.nav.filter((n) => n.id !== 'services').map((n) => (
-                <a key={n.id} href={base + '#' + n.id} className={active === n.id ? 'active' : ''}>
-                  {n.label}
-                </a>
+                n.id === 'gallery'
+                  ? <a key={n.id} href="/gallery" className={active === n.id ? 'active' : ''}>{n.label}</a>
+                  : <a key={n.id} href={base + '#' + n.id} className={active === n.id ? 'active' : ''}>{n.label}</a>
               ))}
             </nav>
             <div className="nav-right">
@@ -139,9 +139,9 @@ export function Nav({ active, onBook, base = '' }: NavProps) {
             </div>
           )}
           {NG.nav.filter((n) => n.id !== 'services').map((n) => (
-            <a key={n.id} href={base + '#' + n.id} onClick={() => setOpen(false)}>
-              {n.label}
-            </a>
+            n.id === 'gallery'
+              ? <a key={n.id} href="/gallery" onClick={() => setOpen(false)}>{n.label}</a>
+              : <a key={n.id} href={base + '#' + n.id} onClick={() => setOpen(false)}>{n.label}</a>
           ))}
           <a className="btn btn-dark" href={'tel:' + NG.biz.phoneRaw}>
             <Icon name="phone" size={16} /> {NG.biz.phone}

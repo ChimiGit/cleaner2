@@ -51,7 +51,7 @@ export const NG = {
     { label: 'Checklist', id: 'checklist' },
     { label: 'About', id: 'about' },
     { label: 'Reviews', id: 'reviews' },
-    { label: 'Areas', id: 'areas' },
+    { label: 'Gallery', id: 'gallery' },
     { label: 'Contact', id: 'contact' },
   ],
 

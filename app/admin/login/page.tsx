@@ -32,6 +32,7 @@ export default function AdminLoginPage() {
 
   return (
     <div style={styles.page}>
+      <a href="/" style={styles.backTop}>← Back to website</a>
       <div style={styles.card}>
         <h1 style={styles.title}>NG Clean Admin</h1>
         <p style={styles.sub}>Enter your password to continue.</p>
@@ -78,6 +79,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
     background: '#f4f6f4',
+    position: 'relative' as const,
   },
   card: {
     background: '#fff',
@@ -139,5 +141,17 @@ const styles: Record<string, React.CSSProperties> = {
     border: 'none',
     borderRadius: 8,
     cursor: 'pointer',
+  },
+  backTop: {
+    position: 'absolute' as const,
+    top: 24,
+    left: 28,
+    fontSize: 13,
+    fontWeight: 500,
+    color: '#6b7280',
+    textDecoration: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
   },
 };

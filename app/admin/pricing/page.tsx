@@ -77,6 +77,12 @@ export default function AdminPricingPage() {
         </div>
       </div>
 
+      {/* Admin nav */}
+      <div style={s.nav}>
+        <a href="/admin/pricing" style={{ ...s.navLink, ...s.navActive }}>Pricing</a>
+        <a href="/admin/gallery" style={s.navLink}>Gallery</a>
+      </div>
+
       <div style={s.grid}>
         {/* Hourly rates */}
         <section style={s.card}>
@@ -214,6 +220,14 @@ const s: Record<string, React.CSSProperties> = {
     minHeight: '100vh',
     background: '#f4f6f4',
   },
+  nav: {
+    background: '#0e2342', display: 'flex', gap: 2, padding: '0 28px',
+  },
+  navLink: {
+    display: 'inline-block', padding: '10px 16px', fontSize: 13, fontWeight: 600,
+    color: 'rgba(255,255,255,0.55)', textDecoration: 'none', borderBottom: '2px solid transparent',
+  },
+  navActive: { color: '#fff', borderBottom: '2px solid #7fb539' },
   header: {
     background: '#143258',
     padding: '20px 28px',
