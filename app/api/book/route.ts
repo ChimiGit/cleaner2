@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const FREQ_LABELS: Record<string, string> = {
   once: 'Once Off', weekly: 'Weekly', fortnightly: 'Fortnightly', monthly: 'Monthly',
 };
@@ -48,6 +46,7 @@ export async function POST(req: NextRequest) {
     : '—';
 
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
       from: 'NG Clean <onboarding@resend.dev>',
       to: process.env.ADMIN_EMAIL!,
