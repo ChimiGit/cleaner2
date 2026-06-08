@@ -6,7 +6,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-and-deploy:
@@ -18,6 +17,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Set lowercase image name
+        run: echo "IMAGE_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -39,20 +41,18 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          envs: GHCR_PAT,GITHUB_ACTOR,GITHUB_REPOSITORY
+          envs: GHCR_PAT,IMAGE_NAME,REGISTRY
           script: |
             cd /opt/ng-clean
 
-            # Login to GHCR using PAT stored on GitHub Secrets
-            echo "$GHCR_PAT" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+            echo "$GHCR_PAT" | docker login $REGISTRY -u "${{ github.actor }}" --password-stdin
 
-            # Pull latest app image only
             docker compose -f docker-compose.prod.yml pull app
 
-            # Restart app without touching postgres/minio
             docker compose -f docker-compose.prod.yml up -d --no-deps app
 
-            # Remove old unused images
             docker image prune -f
         env:
           GHCR_PAT: ${{ secrets.GHCR_PAT }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          REGISTRY: ${{ env.REGISTRY }}
