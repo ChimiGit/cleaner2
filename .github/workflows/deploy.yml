@@ -1,0 +1,58 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          envs: GHCR_PAT,GITHUB_ACTOR,GITHUB_REPOSITORY
+          script: |
+            cd /opt/ng-clean
+
+            # Login to GHCR using PAT stored on GitHub Secrets
+            echo "$GHCR_PAT" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+
+            # Pull latest app image only
+            docker compose -f docker-compose.prod.yml pull app
+
+            # Restart app without touching postgres/minio
+            docker compose -f docker-compose.prod.yml up -d --no-deps app
+
+            # Remove old unused images
+            docker image prune -f
+        env:
+          GHCR_PAT: ${{ secrets.GHCR_PAT }}
