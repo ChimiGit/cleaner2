@@ -61,13 +61,20 @@ export function HomeClient() {
       const line = 130;
       const scrollY = window.scrollY;
       const atBottom = window.innerHeight + scrollY >= document.documentElement.scrollHeight - 4;
-      if (atBottom) { setActive(ids[ids.length - 1]); return; }
+      if (atBottom) { setActive(ids[ids.length - 1]); updateHash(ids[ids.length - 1]); return; }
       let current = ids[0];
       for (const id of ids) {
         const el = document.getElementById(id);
         if (el && el.getBoundingClientRect().top <= line) current = id;
       }
       setActive(current);
+      updateHash(current);
+    };
+    const updateHash = (id: string) => {
+      const hash = id === 'home' ? '' : `#${id}`;
+      if (window.location.hash !== hash) {
+        history.replaceState(null, '', hash || window.location.pathname);
+      }
     };
     pick();
     window.addEventListener('scroll', pick, { passive: true });

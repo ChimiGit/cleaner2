@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
             ${row('Preferred time', time || '—')}
             ${row('Name', name || '—')}
             ${row('Email', `<a href="mailto:${email}" style="color:#143258">${email}</a>`)}
-            ${row('Phone', `<a href="tel:${phone}" style="color:#143258">${phone}</a>`)}
+            ${row('Phone', `<a href="tel:+61${phone?.replace(/\D/g,'')}" style="color:#143258">+61 ${phone}</a>`)}
             ${row('Address', [address, suburb].filter(Boolean).join(', ') || '—')}
             ${row('Entry', entryMethod === 'Other' ? `Other — ${entryOther || '—'}` : entryMethod || '—')}
             ${row('Parking', parking === 'Other' ? `Other — ${parkingOther || '—'}` : parking || '—')}

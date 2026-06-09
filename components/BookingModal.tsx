@@ -486,15 +486,29 @@ export function BookingModal({
                 </div>
                 <div className={"field" + (errors.phone ? " err" : "")}>
                   <label>Phone</label>
-                  <input
-                    {...register("phone", {
-                      required: "Required",
-                      validate: (v) =>
-                        v.replace(/\D/g, "").length >= 7 ||
-                        "Valid phone needed",
-                    })}
-                    placeholder="(555) 010-2233"
-                  />
+                  <div style={{ display: 'flex', alignItems: 'stretch' }}>
+                    <span style={{
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      padding: '0 12px', background: '#f4f6f4',
+                      border: '1.5px solid var(--line)', borderRight: 'none',
+                      borderRadius: 'var(--r) 0 0 var(--r)',
+                      fontSize: 14, fontWeight: 600, color: 'var(--ink)',
+                      whiteSpace: 'nowrap', flexShrink: 0,
+                    }}>
+                      🇦🇺 +61
+                    </span>
+                    <input
+                      {...register("phone", {
+                        required: "Required",
+                        validate: (v) =>
+                          v.replace(/\D/g, "").length >= 8 ||
+                          "Enter a valid Australian number",
+                      })}
+                      placeholder="4xx xxx xxx"
+                      style={{ borderRadius: '0 var(--r) var(--r) 0' }}
+                      inputMode="tel"
+                    />
+                  </div>
                   {errors.phone && (
                     <div className="msg">{errors.phone.message}</div>
                   )}
