@@ -11,8 +11,10 @@ export async function POST(req: NextRequest) {
       to: [process.env.ADMIN_EMAIL!],
       subject: `New Quote Request — ${service || 'General'}`,
       html: `
+        <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+        <div style="font-family:'Hanken Grotesk',sans-serif;max-width:620px;margin:0 auto">
         <h2 style="color:#143258;margin:0 0 20px">New Quote Request</h2>
-        <table style="border-collapse:collapse;width:100%;font-family:sans-serif;font-size:15px">
+        <table style="border-collapse:collapse;width:100%;font-family:'Hanken Grotesk',sans-serif;font-size:15px">
           <tr><td style="padding:10px 16px;background:#f6f8f5;font-weight:600;width:120px">Name</td><td style="padding:10px 16px;border-bottom:1px solid #e1e7e0">${name}</td></tr>
           <tr><td style="padding:10px 16px;background:#f6f8f5;font-weight:600">Email</td><td style="padding:10px 16px;border-bottom:1px solid #e1e7e0"><a href="mailto:${email}">${email}</a></td></tr>
           <tr><td style="padding:10px 16px;background:#f6f8f5;font-weight:600">Phone</td><td style="padding:10px 16px;border-bottom:1px solid #e1e7e0"><a href="tel:${phone}">${phone}</a></td></tr>
@@ -20,6 +22,7 @@ export async function POST(req: NextRequest) {
           <tr><td style="padding:10px 16px;background:#f6f8f5;font-weight:600">Message</td><td style="padding:10px 16px">${message || '—'}</td></tr>
         </table>
         <p style="margin-top:24px;color:#7c8896;font-size:13px">Sent from the NG Clean website contact form.</p>
+        </div>
       `,
     });
 

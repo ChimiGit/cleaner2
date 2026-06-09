@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     beds, baths, hours,
     frequency, date, time,
     addons, carpetRooms,
-    entryMethod, parking,
+    entryMethod, entryOther, parking, parkingOther,
   } = await req.json();
 
   const sizeInfo = pricingMode === 'hourly'
@@ -52,7 +52,8 @@ export async function POST(req: NextRequest) {
       to: process.env.ADMIN_EMAIL!,
       subject: `New Booking Request — ${service || 'General'}`,
       html: `
-        <div style="font-family:sans-serif;max-width:620px;margin:0 auto">
+        <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+        <div style="font-family:'Hanken Grotesk',sans-serif;max-width:620px;margin:0 auto">
           <div style="background:#143258;padding:24px 28px;border-radius:8px 8px 0 0">
             <h2 style="color:#fff;margin:0;font-size:20px">New Booking Request</h2>
             <p style="color:rgba(255,255,255,.65);margin:4px 0 0;font-size:13px">NG Clean — website booking form</p>
@@ -69,8 +70,8 @@ export async function POST(req: NextRequest) {
             ${row('Email', `<a href="mailto:${email}" style="color:#143258">${email}</a>`)}
             ${row('Phone', `<a href="tel:${phone}" style="color:#143258">${phone}</a>`)}
             ${row('Address', [address, suburb].filter(Boolean).join(', ') || '—')}
-            ${row('Entry', entryMethod || '—')}
-            ${row('Parking', parking || '—')}
+            ${row('Entry', entryMethod === 'Other' ? `Other — ${entryOther || '—'}` : entryMethod || '—')}
+            ${row('Parking', parking === 'Other' ? `Other — ${parkingOther || '—'}` : parking || '—')}
           </table>
           <p style="padding:16px;color:#7c8896;font-size:12px;margin:0">
             Sent from the NG Clean website. Reply directly to this email to contact the customer.
