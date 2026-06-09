@@ -16,9 +16,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const svc = NG.services.find((s) => s.key === slug);
   if (!svc) return {};
   const det = NG.details[slug];
+  const description = det.tagline + '. ' + det.intro.slice(0, 120) + '…';
   return {
-    title: `${svc.title} — NG Clean Perth`,
-    description: det.tagline + '. ' + det.intro.slice(0, 120) + '…',
+    title: `${svc.title} in Perth`,
+    description,
+    alternates: { canonical: `https://ngclean.com.au/services/${slug}` },
+    openGraph: {
+      title: `${svc.title} — NG Clean Perth`,
+      description,
+      url: `https://ngclean.com.au/services/${slug}`,
+    },
   };
 }
 
