@@ -60,6 +60,7 @@ interface BookingForm {
   entryOther: string;
   parking: string;
   parkingOther: string;
+  terms: boolean;
 }
 
 function Stepper({
@@ -606,6 +607,49 @@ export function BookingModal({
                   )}
                 </div>
               )}
+
+              <div className={"field" + (errors.terms ? " err" : "")} style={{ marginTop: 20 }}>
+                <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer', fontWeight: 400 }}>
+                  <input
+                    type="checkbox"
+                    {...register("terms", { required: "You must agree to continue" })}
+                    style={{ marginTop: 3, flexShrink: 0, accentColor: '#143258', width: 16, height: 16 }}
+                  />
+                  <span>
+                    I affirm that I have read and agree to the{' '}
+                    <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#143258' }}>Terms of Service</a>
+                    {' '}and{' '}
+                    <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#143258' }}>Privacy Policy</a>.
+                  </span>
+                </label>
+                {errors.terms && <div className="msg">{errors.terms.message}</div>}
+                <p style={{ margin: '10px 0 0', fontSize: 12, color: '#7c8896', lineHeight: 1.6 }}>
+                  By submitting your information, you confirm that you have read and agree to our{' '}
+                  <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#143258' }}>Terms of Service</a>
+                  {' '}and{' '}
+                  <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#143258' }}>Privacy Policy</a>.
+                  {' '}You also consent to receive marketing communications and other updates from NG Clean and its affiliates via the contact details you have provided.
+                </p>
+              </div>
+
+              <div style={{
+                marginTop: 16,
+                padding: '12px 14px',
+                background: '#f6f8f5',
+                borderRadius: 8,
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 10,
+              }}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, marginTop: 2 }} aria-hidden="true">
+                  <circle cx="8" cy="8" r="7.25" stroke="#143258" strokeWidth="1.5"/>
+                  <rect x="7.25" y="6.5" width="1.5" height="5" rx=".75" fill="#143258"/>
+                  <rect x="7.25" y="4" width="1.5" height="1.5" rx=".75" fill="#143258"/>
+                </svg>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#143258', lineHeight: 1.5 }}>
+                  Payment will only be processed after the service has been successfully completed.
+                </span>
+              </div>
             </form>
           )}
 
