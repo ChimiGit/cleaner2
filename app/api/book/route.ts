@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
     beds, baths, hours,
     frequency, date, time,
     addons, carpetRooms,
+    grandTotal, addonsTotal,
     entryMethod, entryOther, parking, parkingOther,
   } = await req.json();
 
@@ -72,6 +73,9 @@ export async function POST(req: NextRequest) {
             ${row('Address', [address, suburb].filter(Boolean).join(', ') || '—')}
             ${row('Entry', entryMethod === 'Other' ? `Other — ${entryOther || '—'}` : entryMethod || '—')}
             ${row('Parking', parking === 'Other' ? `Other — ${parkingOther || '—'}` : parking || '—')}
+            ${grandTotal != null
+              ? row('Estimated total', `<strong style="color:#143258">$${grandTotal}${addonsTotal > 0 ? ` <span style="font-weight:400;color:#7c8896">(incl. $${addonsTotal} add-ons)</span>` : ''}</strong>`)
+              : row('Estimated total', 'Quote by phone')}
           </table>
           <p style="padding:16px;color:#7c8896;font-size:12px;margin:0">
             Sent from the NG Clean website. Reply directly to this email to contact the customer.

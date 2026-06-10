@@ -273,6 +273,8 @@ export function BookingModal({
           time,
           addons: [...addons],
           carpetRooms,
+          grandTotal,
+          addonsTotal,
         }),
       });
       setStep(3);
