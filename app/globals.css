@@ -597,6 +597,7 @@ a.ci-row:hover .ci-ic { background: var(--green); color: var(--on-accent); }
 }
 @media (max-width: 680px) {
   .wrap { padding-inline: 18px; }
+  .hero-kicker { font-size: 10px; padding: 5px 10px; gap: 6px; letter-spacing: .08em; }
   .hero-stage { min-height: 520px; }
   .hero-strip { grid-template-columns: 1fr 1fr; margin-top: -20px; }
   .hs-item { justify-content: flex-start; border-left: none; }
