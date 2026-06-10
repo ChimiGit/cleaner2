@@ -458,6 +458,22 @@ a.ci-row:hover .ci-ic { background: var(--green); color: var(--on-accent); }
 .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--green); }
 .field.err input, .field.err select, .field.err textarea { border-color: #c5412f; }
 .field .msg { color: #c5412f; font-size: 12px; margin-top: 5px; }
+
+/* ── Custom date picker ──────────────────────────────────────── */
+.datepicker { border: 1.5px solid var(--line); border-radius: 12px; padding: 12px; background: #fff; }
+.field.err .datepicker { border-color: #c5412f; }
+.dp-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.dp-title { font-size: 14px; font-weight: 700; color: var(--navy); }
+.dp-nav { width: 28px; height: 28px; border-radius: 8px; border: 1.5px solid var(--line); background: #fff; font-size: 16px; color: var(--navy); display: grid; place-items: center; transition: all .15s; cursor: pointer; }
+.dp-nav:hover:not(:disabled) { border-color: var(--navy); background: var(--paper); }
+.dp-nav:disabled { opacity: .3; cursor: default; }
+.dp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.dp-dow { text-align: center; font-size: 11px; font-weight: 700; color: var(--ink-3); padding: 4px 0; letter-spacing: .04em; }
+.dp-day { width: 100%; aspect-ratio: 1; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 600; color: var(--ink); cursor: pointer; transition: all .15s; display: grid; place-items: center; }
+.dp-day:hover:not(.dis):not(.sel) { background: var(--paper); }
+.dp-day.today { color: var(--green); }
+.dp-day.sel { background: var(--navy); color: #fff; }
+.dp-day.dis { opacity: .25; cursor: default; }
 .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { border: 1.5px solid var(--line); border-radius: 999px; padding: 9px 15px; font-size: 14px; font-weight: 600; color: var(--ink-2); transition: all .18s; }
@@ -598,6 +614,7 @@ a.ci-row:hover .ci-ic { background: var(--green); color: var(--on-accent); }
 @media (max-width: 680px) {
   .wrap { padding-inline: 18px; }
   .hero-kicker { font-size: 10px; padding: 5px 10px; gap: 6px; letter-spacing: .08em; }
+  .qe-addons.grid { grid-template-columns: 1fr; }
   .hero-stage { min-height: 520px; }
   .hero-strip { grid-template-columns: 1fr 1fr; margin-top: -20px; }
   .hs-item { justify-content: flex-start; border-left: none; }

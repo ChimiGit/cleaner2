@@ -7,6 +7,61 @@ import { Icon } from "./Icon";
 import type { PricingConfig } from "@/lib/pricing";
 import { DEFAULT_PRICING } from "@/lib/pricing";
 
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+function DatePicker({ value, onChange, minDate }: { value: string; onChange: (v: string) => void; minDate: string }) {
+  const today = new Date(minDate + 'T00:00:00');
+  const [view, setView] = useState<{ year: number; month: number }>(() => {
+    if (value) { const d = new Date(value + 'T00:00:00'); return { year: d.getFullYear(), month: d.getMonth() }; }
+    return { year: today.getFullYear(), month: today.getMonth() };
+  });
+
+  const firstDay = new Date(view.year, view.month, 1).getDay();
+  const daysInMonth = new Date(view.year, view.month + 1, 0).getDate();
+
+  const prevMonth = () => setView(v => v.month === 0 ? { year: v.year - 1, month: 11 } : { year: v.year, month: v.month - 1 });
+  const nextMonth = () => setView(v => v.month === 11 ? { year: v.year + 1, month: 0 } : { year: v.year, month: v.month + 1 });
+
+  const canGoPrev = new Date(view.year, view.month, 1) > new Date(today.getFullYear(), today.getMonth(), 1);
+
+  const cells: (number | null)[] = [...Array(firstDay).fill(null), ...Array.from({ length: daysInMonth }, (_, i) => i + 1)];
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  const fmt = (d: number) => `${view.year}-${String(view.month + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+
+  return (
+    <div className="datepicker">
+      <div className="dp-head">
+        <button type="button" className="dp-nav" onClick={prevMonth} disabled={!canGoPrev}>‹</button>
+        <span className="dp-title">{MONTHS[view.month]} {view.year}</span>
+        <button type="button" className="dp-nav" onClick={nextMonth}>›</button>
+      </div>
+      <div className="dp-grid">
+        {DAYS.map(d => <span key={d} className="dp-dow">{d}</span>)}
+        {cells.map((day, i) => {
+          if (!day) return <span key={i} />;
+          const iso = fmt(day);
+          const disabled = iso < minDate;
+          const selected = iso === value;
+          const isToday = iso === minDate;
+          return (
+            <button
+              key={i}
+              type="button"
+              className={'dp-day' + (selected ? ' sel' : '') + (isToday ? ' today' : '') + (disabled ? ' dis' : '')}
+              disabled={disabled}
+              onClick={() => onChange(iso)}
+            >
+              {day}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function closestPrice(table: [number, number, number][], beds: number, baths: number) {
   const exact = table.find(([b, ba]) => b === beds && ba === baths);
   if (exact) return exact[2];
@@ -444,12 +499,7 @@ export function BookingModal({
 
               <div className={"field" + (schedErr.date ? " err" : "")}>
                 <label>Preferred date</label>
-                <input
-                  type="date"
-                  value={date}
-                  min={today}
-                  onChange={(e) => setDate(e.target.value)}
-                />
+                <DatePicker value={date} onChange={setDate} minDate={today} />
                 {schedErr.date && <div className="msg">Pick a date.</div>}
               </div>
               <div className={"field" + (schedErr.time ? " err" : "")}>
