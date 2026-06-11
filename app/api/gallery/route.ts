@@ -1,15 +1,21 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { galleryImages } from '@/lib/schema';
-import { asc } from 'drizzle-orm';
+import { asc, count } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+const PAGE_SIZE = 10;
+
+export async function GET(req: NextRequest) {
   try {
-    const images = await db.select().from(galleryImages).orderBy(asc(galleryImages.sortOrder), asc(galleryImages.createdAt));
-    return NextResponse.json(images);
+    const offset = Number(req.nextUrl.searchParams.get('offset') ?? 0);
+    const [images, [{ total }]] = await Promise.all([
+      db.select().from(galleryImages).orderBy(asc(galleryImages.sortOrder), asc(galleryImages.createdAt)).limit(PAGE_SIZE).offset(offset),
+      db.select({ total: count() }).from(galleryImages),
+    ]);
+    return NextResponse.json({ images, total });
   } catch {
-    return NextResponse.json([]);
+    return NextResponse.json({ images: [], total: 0 });
   }
 }

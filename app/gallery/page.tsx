@@ -1,4 +1,7 @@
 import { GalleryPageClient } from '@/components/GalleryPageClient';
+import { db } from '@/lib/db';
+import { galleryImages } from '@/lib/schema';
+import { asc, count } from 'drizzle-orm';
 
 import type { Metadata } from 'next';
 
@@ -13,6 +16,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function GalleryPage() {
-  return <GalleryPageClient />;
+const PAGE_SIZE = 10;
+
+export default async function GalleryPage() {
+  const [images, [{ total }]] = await Promise.all([
+    db.select().from(galleryImages).orderBy(asc(galleryImages.sortOrder), asc(galleryImages.createdAt)).limit(PAGE_SIZE).catch(() => []),
+    db.select({ total: count() }).from(galleryImages).catch(() => [{ total: 0 }]),
+  ]);
+
+  return <GalleryPageClient initialImages={images} total={Number(total)} />;
 }
