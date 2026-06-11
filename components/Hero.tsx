@@ -31,6 +31,9 @@ export function Hero({ onBook, pricing }: HeroProps) {
                 <a className="btn btn-light" href={'tel:' + NG.biz.phoneRaw}>
                   <Icon name="phone" size={16} /> Call {NG.biz.phone}
                 </a>
+                <a className="btn btn-light" href={'tel:' + NG.biz.phone2Raw}>
+                  <Icon name="phone" size={16} /> Call {NG.biz.phone2}
+                </a>
                 <span className="hero-hours"><Icon name="clock" size={14} />Mon–Fri 8am–5pm · Sat–Sun 9am–5pm</span>
               </div>
               <div className="hero-rating">

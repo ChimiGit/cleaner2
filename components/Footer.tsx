@@ -42,6 +42,7 @@ export function Footer({ onBook, base = '' }: FooterProps) {
           <div className="foot-col">
             <h5>Contact</h5>
             <a href={'tel:' + NG.biz.phoneRaw}>{NG.biz.phone}</a>
+            <a href={'tel:' + NG.biz.phone2Raw}>{NG.biz.phone2}</a>
             <span className="foot-static">Mon – Fri: 8am – 5pm</span>
             <span className="foot-static">Sat – Sun: 9am – 5pm</span>
             <span className="foot-static">ABN {NG.biz.abn}</span>

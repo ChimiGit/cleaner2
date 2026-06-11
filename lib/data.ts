@@ -12,6 +12,8 @@ export const NG = {
     name: 'NG Clean',
     phone: '0403 711 348',
     phoneRaw: '0403711348',
+    phone2: '0422 846 026',
+    phone2Raw: '0422846026',
     abn: '61 703 572 412',
     city: 'Perth',
     hours: [

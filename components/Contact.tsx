@@ -64,6 +64,10 @@ export function Contact() {
                 <span className="ci-ic"><Icon name="phone" size={18} /></span>
                 <span><b>{NG.biz.phone}</b><em>Call or text to book</em></span>
               </a>
+              <a className="ci-row" href={'tel:' + NG.biz.phone2Raw}>
+                <span className="ci-ic"><Icon name="phone" size={18} /></span>
+                <span><b>{NG.biz.phone2}</b><em>Call or text to book</em></span>
+              </a>
               <div className="ci-row">
                 <span className="ci-ic"><Icon name="clock" size={18} /></span>
                 <span>
