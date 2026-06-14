@@ -76,7 +76,7 @@ interface QuoteEstimatorProps {
 
 export function QuoteEstimator({ onBook, pricing = DEFAULT_PRICING }: QuoteEstimatorProps) {
   const [mode, setMode] = useState<Mode>('hourly');
-  const [beds, setBeds] = useState(1);
+  const [beds, setBeds] = useState(0);
   const [baths, setBaths] = useState(0);
   const [hours, setHours] = useState(0);
   const [extraMins, setExtraMins] = useState(0);
