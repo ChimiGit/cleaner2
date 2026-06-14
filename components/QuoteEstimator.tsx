@@ -78,7 +78,7 @@ export function QuoteEstimator({ onBook, pricing = DEFAULT_PRICING }: QuoteEstim
   const [mode, setMode] = useState<Mode>('hourly');
   const [beds, setBeds] = useState(1);
   const [baths, setBaths] = useState(0);
-  const [hours, setHours] = useState(2);
+  const [hours, setHours] = useState(0);
   const [extraMins, setExtraMins] = useState(0);
   const [svc, setSvc] = useState<ServiceType>('');
   const [freq, setFreq] = useState('once');
@@ -113,7 +113,7 @@ export function QuoteEstimator({ onBook, pricing = DEFAULT_PRICING }: QuoteEstim
           <div className="qe-row">
             <div className="qe-field">
               <label className="qe-label">Hours</label>
-              <Stepper value={hours} onChange={setHours} min={2} max={8} />
+              <Stepper value={hours} onChange={(v) => setHours(v === 1 ? (hours === 0 ? 2 : 0) : v)} min={0} max={8} />
             </div>
             <div className="qe-field">
               <label className="qe-label">Extra mins</label>
