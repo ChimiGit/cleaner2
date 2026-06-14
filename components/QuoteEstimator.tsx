@@ -18,7 +18,7 @@ function closestPrice(table: [number, number, number][], beds: number, baths: nu
 }
 
 
-type ServiceType = 'regular' | 'deep' | 'bond' | 'carpet' | 'oven' | 'window' | 'office' | 'airbnb' | 'school';
+type ServiceType = 'regular' | 'deep' | 'bond' | 'carpet' | 'oven' | 'window' | 'office' | 'airbnb' | 'school' | '';
 type Mode = 'size' | 'hourly';
 
 const SERVICES: { id: ServiceType; label: string }[] = [
@@ -34,6 +34,7 @@ const SERVICES: { id: ServiceType; label: string }[] = [
 ];
 
 function calcPrice(mode: Mode, svc: ServiceType, freq: string, beds: number, baths: number, hours: number, extraMins: number, pricing: PricingConfig): number | null {
+  if (!svc) return null;
   if (mode === 'hourly') {
     const h = hours + extraMins / 60;
     if (svc === 'deep') return Math.round(h * pricing.deepHourly);
@@ -74,12 +75,12 @@ interface QuoteEstimatorProps {
 }
 
 export function QuoteEstimator({ onBook, pricing = DEFAULT_PRICING }: QuoteEstimatorProps) {
-  const [mode, setMode] = useState<Mode>('size');
-  const [beds, setBeds] = useState(2);
-  const [baths, setBaths] = useState(1);
-  const [hours, setHours] = useState(3);
+  const [mode, setMode] = useState<Mode>('hourly');
+  const [beds, setBeds] = useState(1);
+  const [baths, setBaths] = useState(0);
+  const [hours, setHours] = useState(2);
   const [extraMins, setExtraMins] = useState(0);
-  const [svc, setSvc] = useState<ServiceType>('regular');
+  const [svc, setSvc] = useState<ServiceType>('');
   const [freq, setFreq] = useState('once');
   const total = useMemo(() => calcPrice(mode, svc, freq, beds, baths, hours, extraMins, pricing), [mode, svc, freq, beds, baths, hours, extraMins, pricing]);
 
@@ -91,8 +92,8 @@ export function QuoteEstimator({ onBook, pricing = DEFAULT_PRICING }: QuoteEstim
         <div className="qe-title">Instant quote</div>
         <div className="qe-sub">Estimate upfront — no sign-up.</div>
         <div className="qe-tabs">
-          <button className={'qe-tab' + (mode === 'size' ? ' active' : '')} onClick={() => setMode('size')}>By Size</button>
           <button className={'qe-tab' + (mode === 'hourly' ? ' active' : '')} onClick={() => setMode('hourly')}>Hourly</button>
+          <button className={'qe-tab' + (mode === 'size' ? ' active' : '')} onClick={() => setMode('size')}>By Size</button>
         </div>
       </div>
 
@@ -101,11 +102,11 @@ export function QuoteEstimator({ onBook, pricing = DEFAULT_PRICING }: QuoteEstim
           <div className="qe-row">
             <div className="qe-field">
               <label className="qe-label"><Icon name="bed" size={12} /> Bedrooms</label>
-              <Stepper value={beds} onChange={setBeds} min={baths === 0 ? 1 : 0} max={6} />
+              <Stepper value={beds} onChange={setBeds} min={0} max={6} />
             </div>
             <div className="qe-field">
               <label className="qe-label"><Icon name="shield" size={12} /> Bathrooms</label>
-              <Stepper value={baths} onChange={setBaths} min={beds === 0 ? 1 : 0} max={6} />
+              <Stepper value={baths} onChange={setBaths} min={0} max={6} />
             </div>
           </div>
         ) : (
@@ -129,6 +130,7 @@ export function QuoteEstimator({ onBook, pricing = DEFAULT_PRICING }: QuoteEstim
         <div className="qe-field" style={{ marginTop: 14 }}>
           <label className="qe-label">Type of clean</label>
           <select className="qe-select" value={svc} onChange={(e) => setSvc(e.target.value as ServiceType)}>
+            <option value="" disabled>Select type of clean</option>
             {SERVICES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
           </select>
         </div>
@@ -163,8 +165,8 @@ export function QuoteEstimator({ onBook, pricing = DEFAULT_PRICING }: QuoteEstim
             </>
           ) : (
             <>
-              <div className="qe-price-value" style={{ fontSize: 16 }}>Quote by phone</div>
-              <span className="qe-price-note">We'll confirm your price</span>
+              <div className="qe-price-value">$0</div>
+              <span className="qe-price-note">guide price</span>
             </>
           )}
         </div>
