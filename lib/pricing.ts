@@ -6,7 +6,7 @@ export interface PricingConfig {
   deepHourly: number;
   vacateHourly: number;
   defaultHourly: number;
-  addons: { id: string; label: string; price: number; unit: string }[];
+  addons: { id: string; label: string; price: number; unit: string; status: 'active' | 'inactive' }[];
 }
 
 export const DEFAULT_PRICING: PricingConfig = {
@@ -24,14 +24,14 @@ export const DEFAULT_PRICING: PricingConfig = {
   vacateHourly: 65,
   defaultHourly: 48,
   addons: [
-    { id: 'fridge',  label: 'Inside Fridge',             price: 59,  unit: ''      },
-    { id: 'windows', label: 'Exterior Windows',           price: 80,  unit: ''      },
-    { id: 'carpet',  label: 'Carpet Steam Clean',         price: 35,  unit: '/room' },
-    { id: 'balcony', label: 'Balcony Cleaning',           price: 35,  unit: ''      },
-    { id: 'walls',   label: 'Wall Deep Cleaning',         price: 180, unit: ''      },
-    { id: 'garage',  label: 'Garage Sweep',               price: 29,  unit: ''      },
-    { id: 'patio',   label: 'Patio / Alfresco',           price: 29,  unit: ''      },
-    { id: 'tiles',   label: 'Professional Tile Cleaning', price: 150, unit: ''      },
-    { id: 'blinds',  label: 'Blinds Wet Wipe',            price: 120, unit: ''      },
+    { id: 'fridge',  label: 'Inside Fridge',             price: 59,  unit: '',      status: 'active' },
+    { id: 'windows', label: 'Exterior Windows',           price: 80,  unit: '',      status: 'active' },
+    { id: 'carpet',  label: 'Carpet Steam Clean',         price: 35,  unit: '/room', status: 'active' },
+    { id: 'balcony', label: 'Balcony Cleaning',           price: 35,  unit: '',      status: 'active' },
+    { id: 'walls',   label: 'Wall Deep Cleaning',         price: 180, unit: '',      status: 'active' },
+    { id: 'garage',  label: 'Garage Sweep',               price: 29,  unit: '',      status: 'active' },
+    { id: 'patio',   label: 'Patio / Alfresco',           price: 29,  unit: '',      status: 'active' },
+    { id: 'tiles',   label: 'Professional Tile Cleaning', price: 150, unit: '',      status: 'active' },
+    { id: 'blinds',  label: 'Blinds Wet Wipe',            price: 120, unit: '',      status: 'active' },
   ],
 };

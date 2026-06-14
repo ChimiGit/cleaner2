@@ -59,6 +59,22 @@ export default function AdminPricingPage() {
     }));
   }
 
+  async function toggleAddonStatus(id: string) {
+    const addon = config.addons.find(a => a.id === id);
+    if (!addon) return;
+    const newStatus = (addon.status ?? 'active') === 'active' ? 'inactive' : 'active';
+    setConfig(prev => ({
+      ...prev,
+      addons: prev.addons.map(a => a.id === id ? { ...a, status: newStatus } : a),
+    }));
+    const res = await fetch(`/api/admin/pricing/addon/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus }),
+    });
+    if (res.status === 401) router.push('/admin/login');
+  }
+
   if (loadError) return <div className="admin-page"><p style={{ color: '#c5412f', padding: 24 }}>{loadError}</p></div>;
 
   return (
@@ -83,22 +99,23 @@ export default function AdminPricingPage() {
       </nav>
 
       <div className="admin-grid">
-        {/* Hourly rates */}
-        <section className="admin-card">
-          <h2>Hourly Rates ($/hr)</h2>
-          <div className="admin-rate-grid">
-            <RateField label="Regular – Once Off" value={config.regularHourly.once} onChange={v => updateHourly('once', v)} />
-            <RateField label="Regular – Weekly" value={config.regularHourly.weekly} onChange={v => updateHourly('weekly', v)} />
-            <RateField label="Regular – Fortnightly" value={config.regularHourly.fortnightly} onChange={v => updateHourly('fortnightly', v)} />
-            <RateField label="Regular – Monthly" value={config.regularHourly.monthly} onChange={v => updateHourly('monthly', v)} />
-            <RateField label="Deep Clean" value={config.deepHourly} onChange={v => setConfig(p => ({ ...p, deepHourly: v }))} />
-            <RateField label="End of Lease / Bond" value={config.vacateHourly} onChange={v => setConfig(p => ({ ...p, vacateHourly: v }))} />
-            <RateField label="Default (other services)" value={config.defaultHourly} onChange={v => setConfig(p => ({ ...p, defaultHourly: v }))} />
-          </div>
-        </section>
+        {/* Hourly rates + Add-ons row */}
+        <div className="admin-row">
+          <section className="admin-card" style={{ flex: 1 }}>
+            <h2>Hourly Rates ($/hr)</h2>
+            <div className="admin-rate-grid">
+              <RateField label="Regular – Once Off" value={config.regularHourly.once} onChange={v => updateHourly('once', v)} />
+              <RateField label="Regular – Weekly" value={config.regularHourly.weekly} onChange={v => updateHourly('weekly', v)} />
+              <RateField label="Regular – Fortnightly" value={config.regularHourly.fortnightly} onChange={v => updateHourly('fortnightly', v)} />
+              <RateField label="Regular – Monthly" value={config.regularHourly.monthly} onChange={v => updateHourly('monthly', v)} />
+              <RateField label="Deep Clean" value={config.deepHourly} onChange={v => setConfig(p => ({ ...p, deepHourly: v }))} />
+              <RateField label="End of Lease / Bond" value={config.vacateHourly} onChange={v => setConfig(p => ({ ...p, vacateHourly: v }))} />
+              <RateField label="Default (other services)" value={config.defaultHourly} onChange={v => setConfig(p => ({ ...p, defaultHourly: v }))} />
+            </div>
+          </section>
 
         {/* Add-ons */}
-        <section className="admin-card">
+        <section className="admin-card" style={{ flex: 2 }}>
           <h2>Add-on Prices</h2>
           <table className="admin-table">
             <thead>
@@ -106,25 +123,38 @@ export default function AdminPricingPage() {
                 <th>Add-on</th>
                 <th>Unit</th>
                 <th style={{ textAlign: 'right' }}>Price ($)</th>
+                <th style={{ textAlign: 'center' }}>Status</th>
               </tr>
             </thead>
             <tbody>
-              {config.addons.map(a => (
-                <tr key={a.id}>
-                  <td>{a.label}</td>
-                  <td style={{ color: '#6b7280', fontSize: 13 }}>{a.unit || '—'}</td>
-                  <td style={{ textAlign: 'right' }}>
-                    <PriceInput value={a.price} onChange={v => updateAddonPrice(a.id, v)} />
-                  </td>
-                </tr>
-              ))}
+              {config.addons.map(a => {
+                const isActive = (a.status ?? 'active') === 'active';
+                return (
+                  <tr key={a.id} style={{ opacity: isActive ? 1 : 0.45 }}>
+                    <td>{a.label}</td>
+                    <td style={{ color: '#6b7280', fontSize: 13 }}>{a.unit || '—'}</td>
+                    <td style={{ textAlign: 'right' }}>
+                      <PriceInput value={a.price} onChange={v => updateAddonPrice(a.id, v)} />
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      <label className="toggle-switch">
+                        <input type="checkbox" checked={isActive} onChange={() => toggleAddonStatus(a.id)} />
+                        <span className="toggle-track" />
+                      </label>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </section>
+        </div>
 
-        <SizeTableCard title="Regular Cleaning – By Size" table={config.regularTable} onChange={(idx, price) => updateSizeTable('regularTable', idx, price)} />
-        <SizeTableCard title="Deep Cleaning – By Size" table={config.deepTable} onChange={(idx, price) => updateSizeTable('deepTable', idx, price)} />
-        <SizeTableCard title="End of Lease / Bond – By Size" table={config.vacateTable} onChange={(idx, price) => updateSizeTable('vacateTable', idx, price)} />
+        <div className="admin-size-row">
+          <SizeTableCard title="Regular Cleaning – By Size" table={config.regularTable} onChange={(idx, price) => updateSizeTable('regularTable', idx, price)} />
+          <SizeTableCard title="Deep Cleaning – By Size" table={config.deepTable} onChange={(idx, price) => updateSizeTable('deepTable', idx, price)} />
+          <SizeTableCard title="End of Lease / Bond – By Size" table={config.vacateTable} onChange={(idx, price) => updateSizeTable('vacateTable', idx, price)} />
+        </div>
       </div>
 
       <div style={{ padding: '0 20px 40px', display: 'flex', gap: 10, justifyContent: 'flex-end', flexWrap: 'wrap' }}>

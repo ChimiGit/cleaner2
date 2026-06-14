@@ -437,7 +437,6 @@ export function BookingModal({
                   <div className="field">
                     <label>Extra mins</label>
                     <select
-                      className="qe-select"
                       value={extraMins}
                       onChange={(e) => setExtraMins(Number(e.target.value))}
                     >
@@ -472,7 +471,7 @@ export function BookingModal({
               <div className="field">
                 <label>Add-ons</label>
                 <div className="qe-addons grid">
-                  {pricing.addons.map((a) => {
+                  {pricing.addons.filter(a => (a.status ?? 'active') === 'active').map((a) => {
                     const on = addons.has(a.id);
                     return (
                       <div key={a.id} className="qe-addon-row">
